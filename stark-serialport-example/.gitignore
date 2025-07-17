@@ -14,5 +14,5 @@ launch.json
 *.exe.dSYM/
 install/
 log/
-ros2_stark_ws/src/ros2_stark_controller/lib/*.so
+# ros2_stark_ws/src/ros2_stark_controller/lib/*.so
 stark_modbus_touch_read_speed.py
