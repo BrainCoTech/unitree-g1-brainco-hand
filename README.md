@@ -9,4 +9,4 @@ The Stark SDK can be found [here(original version)](https://github.com/BrainCoTe
 The only difference between this SDK version and the original one is that Unitree G1 and the BrainCo hands communicate via **double 485** interfaces. It means the left and right hand messages are transmitted via /dev/ttyUSB0 and /dev/ttyUSB1 simultaneously. In this SDK version, the two interfaces are accessed separately to transmit data from both hands **in one ROS node**.
 
 ## 3. FAQ
-See [[FAQ.md]].
+See [FAQ.md](https://github.com/BrainCoTech/unitree-g1-brainco-hand/blob/main/FAQ.md).
