@@ -8,7 +8,7 @@ Arm IK is based on  [Unitree/xr_teleoperate](https://github.com/unitreerobotics/
 This workspace contains a hello demo [hello.py](https://github.com/BrainCoTech/unitree-g1-brainco-hand/blob/main/arm_ws/src/control_py/control_py/hello.py).
 ```py
 self.show_hello(2, 10, "right", speed=1.5)  # 2~10秒右手持续挥手
-self.show_good(2, 3, "left")    # 2~3秒左手点赞
+self.show_like(2, 3, "left")    # 2~3秒左手点赞
 ```
 
 ## 2. stark-serialport-example

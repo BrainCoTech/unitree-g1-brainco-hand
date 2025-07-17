@@ -172,7 +172,7 @@ class MainNode(Node):
                     self.arm_hand_control(self.time_ - t + duration/2, self.time_ - t + duration, arm)
 
     # 点赞
-    def show_good(self, start, end, arm):
+    def show_like(self, start, end, arm):
         if start <= self.time_ < end:
             pos_arm_right = [0.23, -0.3, -0.25, 0., 0., -90.]
             pos_hand = [0., 0., 0.9, 0.9, 0.9, 0.9]
@@ -203,7 +203,7 @@ class MainNode(Node):
 
             # [Stage 2]: start action
             self.show_hello(2, 10, "right", speed=1.5)
-            self.show_good(2, 3, "left")
+            self.show_like(2, 3, "left")
             
             # [Stage 3]: put the arm down to zero posture
             self.arm_hand_control(11, 13, "both",
