@@ -32,19 +32,19 @@ Hello Demo [hello.py](https://github.com/BrainCoTech/unitree-g1-brainco-hand/blo
 ### 安装环境依赖
 1. 安装Miniconda。进入[Miniconda官网](https://www.anaconda.com/docs/getting-started/miniconda/main)，选择系统：`Linux`，选择系统架构`ARM64`，按照官方提供的命令安装。
 2. 创建conda环境，环境名为envname，使用python3.8
-    ```sh
-    conda create -n envname python=3.8
-    conda activate envname
-    ```
+```sh
+conda create -n envname python=3.8
+conda activate envname
+```
 3. 按照[Unitree/xr_teleoperate](https://github.com/unitreerobotics/xr_teleoperate/blob/main/teleop/robot_control/robot_arm_ik.py)在新建的conda环境下安装依赖
-    ```sh
-    # 用于手臂运动控制
-    conda install pinocchio -c conda-forge
-    pip install meshcat
-    # 用于conda环境下编译ROS2
-    pip install rospkg
-    pip install -U colcon-common-extensions
-    ```
+```sh
+# 用于手臂运动控制
+conda install pinocchio -c conda-forge
+pip install meshcat
+# 用于conda环境下编译ROS2
+pip install rospkg
+pip install -U colcon-common-extensions
+```
 
 ### 安装宇树ROS
 如宇树ROS未安装，可参考[宇树文档中心|ROS2通信例程](https://support.unitree.com/home/zh/G1_developer/ros2_communication_routine)安装。
@@ -52,15 +52,15 @@ Hello Demo [hello.py](https://github.com/BrainCoTech/unitree-g1-brainco-hand/blo
 ### 安装强脑灵巧手SDK
 下载本仓库到G1
 - 方法1：
-    ```sh
-    git clone https://github.com/BrainCoTech/unitree-g1-brainco-hand.git
-    ```
+```sh
+git clone https://github.com/BrainCoTech/unitree-g1-brainco-hand.git
+```
 - 方法2：
     下载到本地后上传
-    ```sh
-    scp -r arm_ws unitree@192.168.XXX.XXX:/home/unitree/
-    scp -r stark-serialport-example unitree@192.168.XXX.XXX:/home/unitree/
-    ```
+```sh
+scp -r arm_ws unitree@192.168.XXX.XXX:/home/unitree/
+scp -r stark-serialport-example unitree@192.168.XXX.XXX:/home/unitree/
+```
 
 ### 配置灵巧手
 1. 打开`stark-serialport-example/ros2_stark_ws/src/ros2_stark_controller/config/params_v2_double.yaml`，根据灵巧手配置修改参数，通常使用默认参数。  
