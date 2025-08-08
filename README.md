@@ -32,12 +32,12 @@ Hello Demo [hello.py](https://github.com/BrainCoTech/unitree-g1-brainco-hand/blo
 ### 安装环境依赖
 1. 安装Miniconda。进入[Miniconda官网](https://www.anaconda.com/docs/getting-started/miniconda/main)，选择系统：`Linux`，选择系统架构`ARM64`，按照官方提供的命令安装。
 2. 创建conda环境，环境名为envname，使用python3.8
-    ```
+    ```sh
     conda create -n envname python=3.8
     conda activate envname
     ```
 3. 按照[Unitree/xr_teleoperate](https://github.com/unitreerobotics/xr_teleoperate/blob/main/teleop/robot_control/robot_arm_ik.py)在新建的conda环境下安装依赖
-    ```
+    ```sh
     # 用于手臂运动控制
     conda install pinocchio -c conda-forge
     pip install meshcat
@@ -52,12 +52,12 @@ Hello Demo [hello.py](https://github.com/BrainCoTech/unitree-g1-brainco-hand/blo
 ### 安装强脑灵巧手SDK
 下载本仓库到G1
 - 方法1：
-    ```
+    ```sh
     git clone https://github.com/BrainCoTech/unitree-g1-brainco-hand.git
     ```
 - 方法2：
     下载到本地后上传
-    ```
+    ```sh
     scp -r arm_ws unitree@192.168.XXX.XXX:/home/unitree/
     scp -r stark-serialport-example unitree@192.168.XXX.XXX:/home/unitree/
     ```
@@ -72,7 +72,7 @@ Hello Demo [hello.py](https://github.com/BrainCoTech/unitree-g1-brainco-hand/blo
 
 ##### 运行灵巧手ROS节点
 1. 新打开一个终端，灵巧手节点无需conda环境
-```
+```sh
 cd stark-serialport-example/ros2_stark_ws/          # 进入灵巧手工作空间
 colcon build                                        # 编译节点
 source install/setup.bash                           # 加载工作空间环境配置  
@@ -88,7 +88,7 @@ ros2 launch ros2_stark_controller stark_launch.py   # 运行灵巧手节点
 
 ##### 运行主控制ROS节点
 1. 新打开一个终端，手臂控制需激活新建的环境
-```
+```sh
 conda activate envname              # 激活conda环境
 cd arm_ws/                          # 进入主控制工作空间
 python -m colcon build              # 在conda环境下编译节点
@@ -105,17 +105,18 @@ self.show_like(2, 3, "left")    # 2~3秒左手点赞
 ```
 
 3. 查看ROS信息
-```
+```sh
 ros2 node list
 ```
 /hello_pub 为主控制节点  
 /stark_node 为灵巧手节点  
 /ros_bridge 为宇树节点  
-```
+
+```sh
 ros2 topic list
 ```
-其中 /arm_sdk 为传递宇树手臂控制信息的话题  
-其中 /joint_commands_left 和 /joint_commads_right 分别为传递左右手控制信息的话题  
+/arm_sdk 为传递宇树手臂控制信息的话题  
+/joint_commands_left 和 /joint_commads_right 分别为传递左右手控制信息的话题  
 
 ## FAQ
 [FAQ.md](https://github.com/BrainCoTech/unitree-g1-brainco-hand/blob/main/FAQ.md).
