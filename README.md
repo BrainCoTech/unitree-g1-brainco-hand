@@ -4,14 +4,19 @@
 
 ## 代码库说明
 
-### arm_ws
+### brainco_ws
 
-G1手臂IK计算基于宇树官方示例[Unitree/xr_teleoperate](https://github.com/unitreerobotics/xr_teleoperate/blob/main/teleop/robot_control/robot_arm_ik.py).  
-Hello Demo [hello.py](https://github.com/BrainCoTech/unitree-g1-brainco-hand/blob/main/arm_ws/src/control_py/control_py/hello.py).
+G1手臂IK计算基于宇树官方示例[Unitree/xr_teleoperate](https://github.com/unitreerobotics/xr_teleoperate/blob/main/teleop/robot_control/robot_arm_ik.py)。双臂双手控制基于ROS2。
 
-### stark-serialport-example
+##### ROS 节点
 
-本例中使用的灵巧手SDK与[原版SDK](https://github.com/BrainCoTech/stark-serialport-example/tree/revo2)区别: 
+- Main Control [smach_action.py](https://github.com/BrainCoTech/unitree-g1-brainco-hand/blob/main/brainco_ws/src/control_py/control_py/smach_action.py)
+- State machine transition client [keyboard_call.py](https://github.com/BrainCoTech/unitree-g1-brainco-hand/blob/main/brainco_ws/src/control_py/control_py/keyboard_call.py)
+- Brainco Hand [stark_node.cpp](https://github.com/BrainCoTech/unitree-g1-brainco-hand/blob/main/ros2_stark_ws/src/ros2_stark_controller/src/stark_node.cpp)
+
+### ros2_stark_ws
+
+本例中使用的灵巧手SDK与[原版SDK](https://github.com/BrainCoTech/stark-serialport-example/tree/revo2/ros2_stark_ws)区别: 
 强脑灵巧手与宇树G1通过**双485**串口通信，即单ROS节点中左右手分别通过`/dev/ttyUSB0`和`/dev/ttyUSB1`串口同时传输信息。
 
 
@@ -22,12 +27,45 @@ Hello Demo [hello.py](https://github.com/BrainCoTech/unitree-g1-brainco-hand/blo
 ### 机器人启动
 1. 宇树G1开机，具体可参照[宇树文档中心|操作指南](https://support.unitree.com/home/zh/G1_developer/quick_start)。接电时，灵巧手手背指示灯亮起，手指自动复位。
 2. 等待（约1分钟）宇树G1进入**零力矩模式**，具体表现为随意活动关节无阻力。
-3. 使用遥控器，按照说明按下对应按钮，使机器人先进入**阻尼模式**，再进入**锁定站立模式**。(注意：手臂开发**不进入**运动模式)
+3. 使用遥控器，按照说明按下对应按钮，使机器人依次进入**阻尼模式** → **锁定站立模式**。(注意：手臂开发**不进入**运动模式)
 
 ### 远程连接
-1. 具体可参考[宇树文档中心|快速开发](https://support.unitree.com/home/zh/G1_developer/quick_development)，首次需用网线连接宇树G1，将计算机以太网IP设置为与宇树G1同网段，默认是192.168.123.XXX。后续可按照[宇树文档中心|常见问题](https://support.unitree.com/home/zh/G1_developer/FAQ)配置WIFI，即可无线连接。
-2. 打开VSCode，安装拓展Remote SSH，点击New Remote，输入`ssh unitree@192.168.XXX.XXX`(宇树G1的IP)，输入密码，即可连接。打开文件夹`/home/unitree/`访问所需文件。
+参考[宇树文档中心|快速开发](https://support.unitree.com/home/zh/G1_developer/quick_development)。
+1. 首次连接使用网线连接G1和计算机，将计算机以太网IP设置为与宇树G1同网段 `192.168.123.XXX`
+```
+IP          192.168.123.222
+Subnet      255.255.255.0
+Gateway     192.168.1.1
+DNS         192.168.1.1
+```
+
+2. 打开VSCode，安装拓展Remote SSH，点击New Remote，输入`ssh unitree@192.168.123.164`，输入密码（默认`123`）。连接成功后打开文件夹`/home/unitree/`访问所需文件。
+
 3. 打开新的终端，需输入`1`(即选择ROS环境为Foxy)，按下回车，如需重新选择，可以输入`source ~/.bashrc`
+
+4. 配置WIFI：[宇树文档中心|常见问题](https://support.unitree.com/home/zh/G1_developer/FAQ) → Jetson Orin Nx WIFI 配置方法 → STA模式 → nmcli配置WIFI方式 
+
+如果网络<SSID>和密码包含**特殊字符、中文或空格**，需使用双引号，如
+```sh
+nmcli device wifi connect "我的WiFi" password "mypass@123!"
+```
+如果报错`Not authorized`则加`sudo`
+
+5. 固定远程IP地址：
+```sh
+# 查看 wlan0 网络详细信息
+nmcli device show wlan0
+
+# 如固定IP为 192.168.13.60
+sudo nmcli connection modify <SSID> ipv4.method manual \
+    ipv4.addresses 192.168.13.60/23 \
+    ipv4.gateway 192.168.13.1 \
+    ipv4.dns "192.168.13.1 8.8.8.8"
+
+# 断开网络后重新连接
+sudo nmcli connection down <SSID> && sudo nmcli connection up <SSID>
+```
+
 
 ### 安装环境依赖
 1. 安装Miniconda。进入[Miniconda官网](https://www.anaconda.com/docs/getting-started/miniconda/main)，选择系统：`Linux`，选择系统架构`ARM64`，按照官方提供的命令安装。
@@ -116,7 +154,17 @@ ros2 node list
 ros2 topic list
 ```
 /arm_sdk 为传递宇树手臂控制信息的话题  
-/joint_commands_left 和 /joint_commads_right 分别为传递左右手控制信息的话题  
+/joint_commands_left 和 /joint_commads_right 分别为传递左右手控制信息的话题
+
+
+```sh
+cd ~/unitree-g1-brainco-hand/brainco_ws
+# 启动机器人节点和灵巧手节点
+(g1brainco) unitree@ubuntu:~/unitree-g1-brainco-hand/brainco_ws$ ./launch/launch_robot.sh
+# 启动状态转换 client 节点
+(g1brainco) unitree@ubuntu:~/unitree-g1-brainco-hand/brainco_ws$ ./launch/launch_trans.sh
+```
+
 
 ## FAQ
 [FAQ.md](https://github.com/BrainCoTech/unitree-g1-brainco-hand/blob/main/FAQ.md).
