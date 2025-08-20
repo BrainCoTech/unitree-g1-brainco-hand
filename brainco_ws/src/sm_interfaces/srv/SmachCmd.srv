@@ -1,0 +1,6 @@
+string data    # 事件名，比如 'activate', 'to_substate1'
+string param   # 额外参数（这里可以留空或传字符串参数）
+---
+bool success
+string message
+string current_state

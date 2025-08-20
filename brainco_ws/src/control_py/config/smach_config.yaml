@@ -1,0 +1,6 @@
+smach_node:
+  ros__parameters:
+    log_time_screen: False
+    log_armstate_screen: False
+    log_armcmd_screen: False
+    log_hand_screen: False
