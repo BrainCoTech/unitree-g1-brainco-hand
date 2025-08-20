@@ -7,17 +7,15 @@
 ### brainco_ws
 
 G1手臂IK计算基于宇树官方示例[Unitree/xr_teleoperate](https://github.com/unitreerobotics/xr_teleoperate/blob/main/teleop/robot_control/robot_arm_ik.py)。双臂双手控制基于ROS2。
-
-##### ROS 节点
-
-- Main Control [smach_action.py](https://github.com/BrainCoTech/unitree-g1-brainco-hand/blob/main/brainco_ws/src/control_py/control_py/smach_action.py)
+- Main control [smach_action.py](https://github.com/BrainCoTech/unitree-g1-brainco-hand/blob/main/brainco_ws/src/control_py/control_py/smach_action.py)
 - State machine transition client [keyboard_call.py](https://github.com/BrainCoTech/unitree-g1-brainco-hand/blob/main/brainco_ws/src/control_py/control_py/keyboard_call.py)
-- Brainco Hand [stark_node.cpp](https://github.com/BrainCoTech/unitree-g1-brainco-hand/blob/main/ros2_stark_ws/src/ros2_stark_controller/src/stark_node.cpp)
+
 
 ### ros2_stark_ws
 
 本例中使用的灵巧手SDK与[原版SDK](https://github.com/BrainCoTech/stark-serialport-example/tree/revo2/ros2_stark_ws)区别: 
 强脑灵巧手与宇树G1通过**双485**串口通信，即单ROS节点中左右手分别通过`/dev/ttyUSB0`和`/dev/ttyUSB1`串口同时传输信息。
+- Brainco hands [stark_node.cpp](https://github.com/BrainCoTech/unitree-g1-brainco-hand/blob/main/ros2_stark_ws/src/ros2_stark_controller/src/stark_node.cpp)
 
 
 ## 灵巧手适配教程
@@ -31,7 +29,7 @@ G1手臂IK计算基于宇树官方示例[Unitree/xr_teleoperate](https://github.
 
 ### 远程连接
 参考[宇树文档中心|快速开发](https://support.unitree.com/home/zh/G1_developer/quick_development)。
-1. 首次连接使用网线连接G1和计算机，将计算机以太网IP设置为与宇树G1同网段 `192.168.123.XXX`
+1. 首次连接使用网线连接G1和计算机，将计算机以太网IP设置为与宇树G1同网段 `192.168.123.XXX`,如：
 ```
 IP          192.168.123.222
 Subnet      255.255.255.0
@@ -39,13 +37,17 @@ Gateway     192.168.1.1
 DNS         192.168.1.1
 ```
 
-2. 打开VSCode，安装拓展Remote SSH，点击New Remote，输入`ssh unitree@192.168.123.164`，输入密码（默认`123`）。连接成功后打开文件夹`/home/unitree/`访问所需文件。
+2. 打开VSCode，安装拓展Remote SSH，点击New Remote，输入
+```sh
+ssh unitree@192.168.123.164
+```
+输入密码（默认`123`）。连接成功后打开文件夹`/home/unitree/`访问所需文件。
 
-3. 打开新的终端，需输入`1`(即选择ROS环境为Foxy)，按下回车，如需重新选择，可以输入`source ~/.bashrc`
+3. 打开新的终端，输入`1`(即选择ROS环境为Foxy)，按下回车。如需重新选择，可以输入`source ~/.bashrc`
 
 4. 配置WIFI：[宇树文档中心|常见问题](https://support.unitree.com/home/zh/G1_developer/FAQ) → Jetson Orin Nx WIFI 配置方法 → STA模式 → nmcli配置WIFI方式 
 
-如果网络<SSID>和密码包含**特殊字符、中文或空格**，需使用双引号，如
+如果网络`<SSID>`或密码包含**特殊字符、中文或空格**，需使用双引号，如
 ```sh
 nmcli device wifi connect "我的WiFi" password "mypass@123!"
 ```
@@ -55,6 +57,10 @@ nmcli device wifi connect "我的WiFi" password "mypass@123!"
 ```sh
 # 查看 wlan0 网络详细信息
 nmcli device show wlan0
+
+# 确认选择的IP是否被占用
+nmap -sn 192.168.13.60
+# 显示`Host seems down`则
 
 # 如固定IP为 192.168.13.60
 sudo nmcli connection modify <SSID> ipv4.method manual \
