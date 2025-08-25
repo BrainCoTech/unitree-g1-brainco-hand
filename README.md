@@ -75,102 +75,107 @@ sudo nmcli connection down <SSID> && sudo nmcli connection up <SSID>
 
 ### 安装环境依赖
 1. 安装Miniconda。进入[Miniconda官网](https://www.anaconda.com/docs/getting-started/miniconda/main)，选择系统：`Linux`，选择系统架构`ARM64`，按照官方提供的命令安装。
-2. 创建conda环境，环境名为envname，使用python3.8
+2. 创建conda环境，环境名为g1brainco，使用python3.8
 ```sh
-conda create -n envname python=3.8
-conda activate envname
+conda create -n g1brainco python=3.8
+conda activate g1brainco
 ```
-3. 按照[Unitree/xr_teleoperate](https://github.com/unitreerobotics/xr_teleoperate/blob/main/teleop/robot_control/robot_arm_ik.py)在新建的conda环境下安装依赖
+3. 在新建的conda环境下安装依赖
 ```sh
 # 用于手臂运动控制
 conda install pinocchio -c conda-forge
 pip install meshcat
+pip install transitions
 # 用于conda环境下编译ROS2
 pip install rospkg
 pip install -U colcon-common-extensions
+# 其他依赖
+pip install matplotlib
+pip install empy==3.3.2
+pip install lark-parser
 ```
 
 ### 安装宇树ROS
-如宇树ROS未安装，可参考[宇树文档中心|ROS2通信例程](https://support.unitree.com/home/zh/G1_developer/ros2_communication_routine)安装。
+1. 参考[宇树文档中心|ROS2通信例程](https://support.unitree.com/home/zh/G1_developer/ros2_communication_routine)，安装并编译`unitree_ros2`
+
+2. 打开`~/unitree_ros2/setup.sh`，修改`"enp3s0"`为`"eth0"`
+```xml
+export CYCLONEDDS_URI='<CycloneDDS><Domain><General><Interfaces>
+                            <NetworkInterface name="eth0" priority="default" multicast="default" />
+                        </Interfaces></General></Domain></CycloneDDS>'
+```
 
 ### 安装强脑灵巧手SDK
-下载本仓库到G1
+1. 下载本仓库到G1
 - 方法1：
 ```sh
+cd ~
 git clone https://github.com/BrainCoTech/unitree-g1-brainco-hand.git
 ```
 - 方法2：
     下载到本地后上传
 ```sh
-scp -r arm_ws unitree@192.168.XXX.XXX:/home/unitree/
-scp -r stark-serialport-example unitree@192.168.XXX.XXX:/home/unitree/
+scp -r unitree-g1-brainco-hand unitree@192.168.XXX.XXX:/home/unitree/
+```
+
+2. 设置可执行权限
+```sh
+cd ~/unitree-g1-brainco-hand/brainco_ws 
+chmod +x ./launch/launch_trans.sh
+chmod +x ./launch/launch_robot.sh
 ```
 
 ### 配置灵巧手
-1. 打开`stark-serialport-example/ros2_stark_ws/src/ros2_stark_controller/config/params_v2_double.yaml`，根据灵巧手配置修改参数，通常使用默认参数。  
-此处`port_l`和`port_r`对应左右手串口，分别对应USB-485板的`485_A`，`485_B`信号端口，`baudrate`为波特率，左右手`slave_id`默认为`0x7e`和`0xyf`。
+打开`ros2_stark_ws/src/ros2_stark_controller/config/params_v2_double.yaml`，根据灵巧手配置修改参数，通常使用默认参数。  
+- `port_l, port_r`: 左右手串口，分别对应USB-485板的`485_A, 485_B`信号端口
+- `baudrate`: 波特率
+- `slave_id_l, slave_id_r`: 左手默认`0x7e`右手默认`0x7f`。
 
-2. 打开`stark-serialport-example/ros2_stark_ws/src/ros2_stark_controller/launch/stark_launch.py`，修改`parameters`路径为刚刚修改的`yaml`文件路径。
+### 编译
 
-### 测试Demo
-
-##### 运行灵巧手ROS节点
-1. 新打开一个终端，灵巧手节点无需conda环境
 ```sh
-cd stark-serialport-example/ros2_stark_ws/          # 进入灵巧手工作空间
-colcon build                                        # 编译节点
-source install/setup.bash                           # 加载工作空间环境配置  
-ros2 launch ros2_stark_controller stark_launch.py   # 运行灵巧手节点
+# 激活 conda 环境
+conda activate g1brainco
+# 编译 brainco_ws
+cd ~/unitree-g1-brainco-hand/brainco_ws 
+python -m colcon build    
+# 编译 ros2_stark_ws
+cd ~/unitree-g1-brainco-hand/ros2_stark_ws
+python -m colcon build          
 ```
+
+
+### 运行Demo
+
+同时开启两个终端
+
+##### 终端1: 启动主控制节点和灵巧手节点
+1. 
+```sh
+conda activate g1brainco                    # 激活conda环境
+cd ~/unitree-g1-brainco-hand/brainco_ws     # 进入工作空间      
+./launch/launch_robot.sh                    # 运行 launch 文件
+```
+
 2. 检查输出信息
-- 左右手 Port，Baudrate，slave_id 都正确
-- 串口已打开 serial port opened
-- 正在等待关节控制命令 Waiting for joint cmd ...
+- 左右手 `Port`，`Baudrate`，`slave_id` 都正确
+- 串口已打开 `"serial port opened"`
+- 正在等待关节控制命令 `"Waiting for joint cmd ..."`
+如果未出现上述信息，可能是config文件参数不正确
 
-如果未出现上述信息，可能是config文件参数不正确，或launch文件里地址不正确
+- IK初始化结束 `"IK initialization done."`
+- 当显示 `"Request 'configure' to start"` 则可以发送状态转换请求
 
 
-##### 运行主控制ROS节点
-1. 新打开一个终端，手臂控制需激活新建的环境
+##### 终端2: 启动状态转换 client 节点
 ```sh
-conda activate envname              # 激活conda环境
-cd arm_ws/                          # 进入主控制工作空间
-python -m colcon build              # 在conda环境下编译节点
-source install/setup.bash           # 加载工作空间环境配置
-source ~/unitree_ros2/setup.sh      # 加载宇树ROS工作空间环境配置
-ros2 run control_py hello_pub       # 运行主控制节点
+conda activate g1brainco                    # 激活conda环境
+cd ~/unitree-g1-brainco-hand/brainco_ws     # 进入工作空间      
+./launch/launch_trans.sh                    # 运行 launch 文件
 ```
 
-2. IK初始化完毕后，按下回车机器人手臂和灵巧手开始运动，Ctrl+C 可随时停止  
-Hello Demo [hello.py](https://github.com/BrainCoTech/unitree-g1-brainco-hand/blob/main/arm_ws/src/control_py/control_py/hello.py)包含一个简单的示例
-```py
-self.show_hello(2, 10, "right", speed=1.5)  # 2~10秒右手持续挥手
-self.show_like(2, 3, "left")    # 2~3秒左手点赞
-```
-
-3. 查看ROS信息
-```sh
-ros2 node list
-```
-/hello_pub 为主控制节点  
-/stark_node 为灵巧手节点  
-/ros_bridge 为宇树节点  
-
-```sh
-ros2 topic list
-```
-/arm_sdk 为传递宇树手臂控制信息的话题  
-/joint_commands_left 和 /joint_commads_right 分别为传递左右手控制信息的话题
-
-
-```sh
-cd ~/unitree-g1-brainco-hand/brainco_ws
-# 启动机器人节点和灵巧手节点
-(g1brainco) unitree@ubuntu:~/unitree-g1-brainco-hand/brainco_ws$ ./launch/launch_robot.sh
-# 启动状态转换 client 节点
-(g1brainco) unitree@ubuntu:~/unitree-g1-brainco-hand/brainco_ws$ ./launch/launch_trans.sh
-```
-
+### 请求状态切换
+**终端2**会提示当前状态、可使用的转换和对应的动作。输入`字符(串) + 回车`转换状态。进入`active`状态后，可在字母后加`l`或`r`单独控制左/右手，不加则默认双手。
 
 ## FAQ
 [FAQ.md](https://github.com/BrainCoTech/unitree-g1-brainco-hand/blob/main/FAQ.md).
