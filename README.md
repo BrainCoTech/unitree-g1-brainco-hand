@@ -145,11 +145,11 @@ python -m colcon build
 ```
 
 
-### 运行Demo
+## 测试运行
 
 同时开启两个终端
 
-##### 终端1: 启动主控制节点和灵巧手节点
+### 终端1: 启动主控制节点和灵巧手节点
 1. 
 ```sh
 conda activate g1brainco                    # 激活conda环境
@@ -167,7 +167,7 @@ cd ~/unitree-g1-brainco-hand/brainco_ws     # 进入工作空间
 - 当显示 `"Request 'configure' to start"` 则可以发送状态转换请求
 
 
-##### 终端2: 启动状态转换 client 节点
+### 终端2: 启动状态转换 client 节点
 ```sh
 conda activate g1brainco                    # 激活conda环境
 cd ~/unitree-g1-brainco-hand/brainco_ws     # 进入工作空间      
