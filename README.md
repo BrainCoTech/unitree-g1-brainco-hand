@@ -150,14 +150,13 @@ python -m colcon build
 同时开启两个终端
 
 ### 终端1: 启动主控制节点和灵巧手节点
-1. 
 ```sh
 conda activate g1brainco                    # 激活conda环境
 cd ~/unitree-g1-brainco-hand/brainco_ws     # 进入工作空间      
 ./launch/launch_robot.sh                    # 运行 launch 文件
 ```
 
-2. 检查输出信息
+检查输出信息:
 - 左右手 `Port`，`Baudrate`，`slave_id` 都正确
 - 串口已打开 `"serial port opened"`
 - 正在等待关节控制命令 `"Waiting for joint cmd ..."`
