@@ -175,7 +175,8 @@ cd ~/unitree-g1-brainco-hand/brainco_ws     # 进入工作空间
 ```
 
 ### 请求状态切换
-**终端2**会提示当前状态、可使用的转换和对应的动作。输入`字符(串) + 回车`转换状态。进入`active`状态后，可在字母后加`l`或`r`单独控制左/右手，不加则默认双手。
+**终端2**会提示当前状态、可使用的转换和对应的动作。输入`字符(串) + 回车`转换状态。进入`active`状态后，在字母后加`l`或`r`单独控制左/右手，不加则默认双手。
+![statemachine](https://github.com/BrainCoTech/unitree-g1-brainco-hand/blob/main/brainco_ws/figs/ros2_statemachine.png)
 
 ## FAQ
 [FAQ.md](https://github.com/BrainCoTech/unitree-g1-brainco-hand/blob/main/FAQ.md).
