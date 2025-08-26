@@ -9,15 +9,15 @@ Tutorial on adapting BrainCo Revo2 hands for Unitree G1 robot. Install, setup an
 ### brainco_ws
 
 G1 arm IK calculation is based on [Unitree/xr_teleoperate](https://github.com/unitreerobotics/xr_teleoperate/blob/main/teleop/robot_control/robot_arm_ik.py). Dual-arm dual-hand control is based on ROS2.
-- Main control [smach_action.py](https://github.com/BrainCoTech/unitree-g1-brainco-hand/blob/main/brainco_ws/src/control_py/control_py/smach_action.py)
-- State machine transition client [keyboard_call.py](https://github.com/BrainCoTech/unitree-g1-brainco-hand/blob/main/brainco_ws/src/control_py/control_py/keyboard_call.py)
+- Main control [smach_action.py](./brainco_ws/src/control_py/control_py/smach_action.py)
+- State machine transition client [keyboard_call.py](./brainco_ws/src/control_py/control_py/keyboard_call.py)
 
 
 ### ros2_stark_ws
 
 Difference between this SDK version and [the original version](https://github.com/BrainCoTech/stark-serialport-example/tree/revo2/ros2_stark_ws):  
 The BrainCo hands communicates with Unitree G1 via **dual 485** serial ports, i.e., in a single ROS node, the left and right hands communicate simultaneously through `/dev/ttyUSB0` and `/dev/ttyUSB1`.
-- Brainco hands [stark_node.cpp](https://github.com/BrainCoTech/unitree-g1-brainco-hand/blob/main/ros2_stark_ws/src/ros2_stark_controller/src/stark_node.cpp)
+- Brainco hands [stark_node.cpp](./ros2_stark_ws/src/ros2_stark_controller/src/stark_node.cpp)
 
 
 ## Tutorial
@@ -188,4 +188,4 @@ Without `l/r`, both hands are controlled.
 </p>
 
 ## FAQ
-[FAQ.md](https://github.com/BrainCoTech/unitree-g1-brainco-hand/blob/main/FAQ.md).
+[FAQ.md](./FAQ.md).
