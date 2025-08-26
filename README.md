@@ -1,5 +1,7 @@
 # unitree-g1-brainco-hand
 
+[English Version](./README_en.md) | 中文版
+
 强脑灵巧手Revo2适配宇树G1(Edu标准版23自由度)教程及简单动作示例。
 
 ## 代码库说明
@@ -60,7 +62,7 @@ nmcli device show wlan0
 
 # 确认选择的IP是否被占用
 nmap -sn 192.168.13.60
-# 显示`Host seems down`则
+# 显示`Host seems down`则未被占用
 
 # 如固定IP为 192.168.13.60
 sudo nmcli connection modify <SSID> ipv4.method manual \
@@ -112,8 +114,8 @@ export CYCLONEDDS_URI='<CycloneDDS><Domain><General><Interfaces>
 cd ~
 git clone https://github.com/BrainCoTech/unitree-g1-brainco-hand.git
 ```
-- 方法2：
-    下载到本地后上传
+- 方法2：  
+下载到本地后上传
 ```sh
 scp -r unitree-g1-brainco-hand unitree@192.168.XXX.XXX:/home/unitree/
 ```
