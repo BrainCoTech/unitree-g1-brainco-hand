@@ -9,15 +9,15 @@
 ### brainco_ws
 
 G1手臂IK计算基于宇树官方示例[Unitree/xr_teleoperate](https://github.com/unitreerobotics/xr_teleoperate/blob/main/teleop/robot_control/robot_arm_ik.py)。双臂双手控制基于ROS2。
-- Main control [smach_action.py](https://github.com/BrainCoTech/unitree-g1-brainco-hand/blob/main/brainco_ws/src/control_py/control_py/smach_action.py)
-- State machine transition client [keyboard_call.py](https://github.com/BrainCoTech/unitree-g1-brainco-hand/blob/main/brainco_ws/src/control_py/control_py/keyboard_call.py)
+- Main control [smach_action.py](./brainco_ws/src/control_py/control_py/smach_action.py)
+- State machine transition client [keyboard_call.py](./brainco_ws/src/control_py/control_py/keyboard_call.py)
 
 
 ### ros2_stark_ws
 
 本例中使用的灵巧手SDK与[原版SDK](https://github.com/BrainCoTech/stark-serialport-example/tree/revo2/ros2_stark_ws)区别: 
 强脑灵巧手与宇树G1通过**双485**串口通信，即单ROS节点中左右手分别通过`/dev/ttyUSB0`和`/dev/ttyUSB1`串口同时传输信息。
-- Brainco hands [stark_node.cpp](https://github.com/BrainCoTech/unitree-g1-brainco-hand/blob/main/ros2_stark_ws/src/ros2_stark_controller/src/stark_node.cpp)
+- Brainco hands [stark_node.cpp](./ros2_stark_ws/src/ros2_stark_controller/src/stark_node.cpp)
 
 
 ## 灵巧手适配教程
@@ -182,4 +182,4 @@ cd ~/unitree-g1-brainco-hand/brainco_ws     # 进入工作空间
 </p>
 
 ## FAQ
-[FAQ.md](https://github.com/BrainCoTech/unitree-g1-brainco-hand/blob/main/FAQ.md).
+[FAQ.md](./FAQ.md).
