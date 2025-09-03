@@ -6,34 +6,35 @@
 
 ## 代码库说明
 
-### 最新版本
+#### 最新版本
 
-- 更新：2025.09.03 修复了做第一个动作时立即deactivate手臂异常运动的问题
+更新 2025.09.03 : 修复了做第一个动作时立即deactivate手臂异常运动的问题
 
-### brainco_ws
+#### brainco_ws
 
 G1手臂IK计算基于宇树官方示例[Unitree/xr_teleoperate](https://github.com/unitreerobotics/xr_teleoperate/blob/main/teleop/robot_control/robot_arm_ik.py)。双臂双手控制基于ROS2。
 - Main control [smach_action.py](./brainco_ws/src/control_py/control_py/smach_action.py)
 - State machine transition client [keyboard_call.py](./brainco_ws/src/control_py/control_py/keyboard_call.py)
 
 
-### ros2_stark_ws
+#### ros2_stark_ws
 
 本例中使用的灵巧手SDK与[原版SDK](https://github.com/BrainCoTech/stark-serialport-example/tree/revo2/ros2_stark_ws)区别: 
 强脑灵巧手与宇树G1通过**双485**串口通信，即单ROS节点中左右手分别通过`/dev/ttyUSB0`和`/dev/ttyUSB1`串口同时传输信息。
 - Brainco hands [stark_node.cpp](./ros2_stark_ws/src/ros2_stark_controller/src/stark_node.cpp)
 
 
+
 ## 灵巧手适配教程
 
 视频演示(待添加)
 
-### 机器人启动
+#### 机器人启动
 1. 宇树G1开机，具体可参照[宇树文档中心|操作指南](https://support.unitree.com/home/zh/G1_developer/quick_start)。接电时，灵巧手手背指示灯亮起，手指自动复位。
 2. 等待（约1分钟）宇树G1进入**零力矩模式**，具体表现为随意活动关节无阻力。
 3. 使用遥控器，按照说明按下对应按钮，使机器人依次进入**阻尼模式** → **锁定站立模式**。(注意：手臂开发**不进入**运动模式)
 
-### 远程连接
+#### 远程连接
 参考[宇树文档中心|快速开发](https://support.unitree.com/home/zh/G1_developer/quick_development)。
 1. 首次连接使用网线连接G1和计算机，将计算机以太网IP设置为与宇树G1同网段 `192.168.123.XXX`,如：
 ```
@@ -79,7 +80,7 @@ sudo nmcli connection down <SSID> && sudo nmcli connection up <SSID>
 ```
 
 
-### 安装环境依赖
+#### 安装环境依赖
 1. 安装Miniconda。进入[Miniconda官网](https://www.anaconda.com/docs/getting-started/miniconda/main)，选择系统：`Linux`，选择系统架构`ARM64`，按照官方提供的命令安装。
 2. 创建conda环境，环境名为g1brainco，使用python3.8
 ```sh
@@ -101,7 +102,7 @@ pip install empy==3.3.2
 pip install lark-parser
 ```
 
-### 安装宇树ROS
+#### 安装宇树ROS
 1. 参考[宇树文档中心|ROS2通信例程](https://support.unitree.com/home/zh/G1_developer/ros2_communication_routine)，安装并编译`unitree_ros2`
 
 2. 打开`~/unitree_ros2/setup.sh`，修改`"enp3s0"`为`"eth0"`
@@ -111,7 +112,7 @@ export CYCLONEDDS_URI='<CycloneDDS><Domain><General><Interfaces>
                         </Interfaces></General></Domain></CycloneDDS>'
 ```
 
-### 安装强脑灵巧手SDK
+#### 安装强脑灵巧手SDK
 1. 下载本仓库到G1
 - 方法1：
 ```sh
@@ -131,13 +132,13 @@ chmod +x ./launch/launch_trans.sh
 chmod +x ./launch/launch_robot.sh
 ```
 
-### 配置灵巧手
+#### 配置灵巧手
 打开`ros2_stark_ws/src/ros2_stark_controller/config/params_v2_double.yaml`，根据灵巧手配置修改参数，通常使用默认参数。  
 - `port_l, port_r`: 左右手串口，分别对应USB-485板的`485_A, 485_B`信号端口
 - `baudrate`: 波特率
 - `slave_id_l, slave_id_r`: 左手默认`0x7e`右手默认`0x7f`。
 
-### 编译
+#### 编译
 
 ```sh
 # 激活 conda 环境
@@ -155,7 +156,7 @@ python -m colcon build
 
 同时开启两个终端
 
-### 终端1: 启动主控制节点和灵巧手节点
+#### 终端1: 启动主控制节点和灵巧手节点
 ```sh
 conda activate g1brainco                    # 激活conda环境
 cd ~/unitree-g1-brainco-hand/brainco_ws     # 进入工作空间      
@@ -172,18 +173,19 @@ cd ~/unitree-g1-brainco-hand/brainco_ws     # 进入工作空间
 - 当显示 `"Request 'configure' to start"` 则可以发送状态转换请求
 
 
-### 终端2: 启动状态转换 client 节点
+#### 终端2: 启动状态转换 client 节点
 ```sh
 conda activate g1brainco                    # 激活conda环境
 cd ~/unitree-g1-brainco-hand/brainco_ws     # 进入工作空间      
 ./launch/launch_trans.sh                    # 运行 launch 文件
 ```
 
-### 请求状态切换
+#### 请求状态切换
 **终端2**会提示当前状态、可使用的转换和对应的动作。输入`字符(串) + 回车`转换状态。进入`active`状态后，在字母后加`l`或`r`单独控制左/右手，不加则默认双手。
 <p align="center">
   <img src="brainco_ws/figs/ros2_statemachine.png" alt="statemachine" width="600"/>
 </p>
+
 
 ## FAQ
 [FAQ.md](./FAQ.md).
