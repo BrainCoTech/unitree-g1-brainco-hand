@@ -6,6 +6,10 @@
 
 ## 代码库说明
 
+### 最新版本
+
+- 更新：2025.09.03 修复了做第一个动作时立即deactivate手臂异常运动的问题
+
 ### brainco_ws
 
 G1手臂IK计算基于宇树官方示例[Unitree/xr_teleoperate](https://github.com/unitreerobotics/xr_teleoperate/blob/main/teleop/robot_control/robot_arm_ik.py)。双臂双手控制基于ROS2。

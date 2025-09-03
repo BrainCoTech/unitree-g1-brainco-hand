@@ -6,6 +6,10 @@ Tutorial on adapting BrainCo Revo2 hands for Unitree G1 robot. Install, setup an
 
 ## Repository Overview
 
+### Lastest version
+
+
+- Update on 03.09.2025: Fixed the issue of abnormal arm movement when deactivating immediately after performing the first action.
 ### brainco_ws
 
 G1 arm IK calculation is based on [Unitree/xr_teleoperate](https://github.com/unitreerobotics/xr_teleoperate/blob/main/teleop/robot_control/robot_arm_ik.py). Dual-arm dual-hand control is based on ROS2.
