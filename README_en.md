@@ -6,18 +6,18 @@ Tutorial on adapting BrainCo Revo2 hands for Unitree G1 robot. Install, setup an
 
 ## Repository Overview
 
-### Lastest version
+#### Lastest version
 
+Update 2025.09.03: Fixed the issue where the arm behaved abnormally when immediately deactivated during the first action
 
-- Update on 03.09.2025: Fixed the issue of abnormal arm movement when deactivating immediately after performing the first action.
-### brainco_ws
+#### brainco_ws
 
 G1 arm IK calculation is based on [Unitree/xr_teleoperate](https://github.com/unitreerobotics/xr_teleoperate/blob/main/teleop/robot_control/robot_arm_ik.py). Dual-arm dual-hand control is based on ROS2.
 - Main control [smach_action.py](./brainco_ws/src/control_py/control_py/smach_action.py)
 - State machine transition client [keyboard_call.py](./brainco_ws/src/control_py/control_py/keyboard_call.py)
 
 
-### ros2_stark_ws
+#### ros2_stark_ws
 
 Difference between this SDK version and [the original version](https://github.com/BrainCoTech/stark-serialport-example/tree/revo2/ros2_stark_ws):  
 The BrainCo hands communicates with Unitree G1 via **dual 485** serial ports, i.e., in a single ROS node, the left and right hands communicate simultaneously through `/dev/ttyUSB0` and `/dev/ttyUSB1`.
@@ -28,12 +28,12 @@ The BrainCo hands communicates with Unitree G1 via **dual 485** serial ports, i.
 
 Tutorial video (to be added)
 
-### Robot Startup
+#### Robot Startup
 1. Power on Unitree G1 by refering to [Unitree Documentation Center|Operational Guidance](https://support.unitree.com/home/en/G1_developer/quick_start). When the robot powered, the hands' LED will light up and the fingers will reset automatically.
 2. Wait about 1 minute until G1 enters **Zero Torque Mode**, meaning joints can move freely without resistance.
 3. Use the remote controller and press the corresponding buttons to switch the robot sequentially into **Damping Mode** → **Ready Mode**. (Note: For arm development, do not enter **Motion Mode**.)
 
-### Remote Connection
+#### Remote Connection
 Based on [Unitree Documentation Center|Quick Start](https://support.unitree.com/home/en/G1_developer/quick_development):
 1. For the first connection, use an Ethernet cable to connect G1 and your computer. Set the computer’s IP to the same subnet as G1: `192.168.123.XXX`, e.g.:
 ```
@@ -79,7 +79,7 @@ sudo nmcli connection down <SSID> && sudo nmcli connection up <SSID>
 ```
 
 
-### Environment Dependencies
+#### Environment Dependencies
 1. Install Miniconda. Visit [Miniconda Pages](https://www.anaconda.com/docs/getting-started/miniconda/main), choose system: `Linux`, architecture: `ARM64`, and install miniconda using the provided commands.
 
 2. Create a conda environment named `g1brainco` with **Python 3.8**:
@@ -102,7 +102,7 @@ pip install empy==3.3.2
 pip install lark-parser
 ```
 
-### Install Unitree ROS2
+#### Install Unitree ROS2
 1. Based on [Unitree Documentation Center|Ros2 Communication Routine](https://support.unitree.com/home/en/G1_developer/ros2_communication_routine), install and compile `unitree_ros2`.
 
 2. Open `~/unitree_ros2/setup.sh`, change `"enp3s0"` to `"eth0"`
@@ -112,7 +112,7 @@ export CYCLONEDDS_URI='<CycloneDDS><Domain><General><Interfaces>
                         </Interfaces></General></Domain></CycloneDDS>'
 ```
 
-### Install BrainCo Hand SDK
+#### Install BrainCo Hand SDK
 1. Download this repository to G1:
 - Method 1: 
 ```sh
@@ -132,13 +132,13 @@ chmod +x ./launch/launch_trans.sh
 chmod +x ./launch/launch_robot.sh
 ```
 
-### Configure BrainCo Hands
+#### Configure BrainCo Hands
 Open `ros2_stark_ws/src/ros2_stark_controller/config/params_v2_double.yaml`and modify parameters if needed (You can use default settings).  
 - `port_l, port_r`: Left and right hand serial ports, corresponding to USB-485 adapter`485_A, 485_B`.
 - `baudrate`: Baud rate.
 - `slave_id_l, slave_id_r`: Default for left hand`0x7e` and for right hand `0x7f`.
 
-### Compile
+#### Compile
 
 ```sh
 # Activate conda env
@@ -156,7 +156,7 @@ python -m colcon build
 
 Open two terminals simultaneously.
 
-### Terminal 1: Start main control node and hand node
+#### Terminal 1: Start main control node and hand node
 ```sh
 conda activate g1brainco                    # activate conda env
 cd ~/unitree-g1-brainco-hand/brainco_ws     # enter workspace     
@@ -175,14 +175,14 @@ If error occurs, check parameters in `ros2_stark_ws/src/ros2_stark_controller/co
 Then you can send state transition requests.
 
 
-### Terminal 2: Start state transition client node
+#### Terminal 2: Start state transition client node
 ```sh
 conda activate g1brainco                    # activate conda env
 cd ~/unitree-g1-brainco-hand/brainco_ws     # enter workspace       
 ./launch/launch_trans.sh                    # run launch.sh
 ```
 
-### State Transition Requests
+#### State Transition Requests
 Terminal 2 will show current state, available transitions, and corresponding actions.  
 Enter `string + Enter` to switch states.
 After entering **active** state, add `l` or `r` to control left/right hand individually.
@@ -190,6 +190,7 @@ Without `l/r`, both hands are controlled.
 <p align="center">
   <img src="brainco_ws/figs/ros2_statemachine.png" alt="statemachine" width="600"/>
 </p>
+
 
 ## FAQ
 [FAQ.md](./FAQ.md).
