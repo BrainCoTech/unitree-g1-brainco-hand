@@ -62,6 +62,7 @@ class LifecyclePublisher(RobotTasks, Node):
         if self.ready_to_start:
             self.get_logger().info(f"Enter state {self.sm.get_state()}")
             self.clear_timer()
+            self.store_curr_cmd("both")
             self._timer = self.create_timer(0.01, self.timer_get_ready)
             self.get_logger().info(f"New timer created.")
         else:
@@ -106,7 +107,7 @@ class LifecyclePublisher(RobotTasks, Node):
         self.gesture_list = ["石头","剪刀","布"]
         self.loop = 100
         self.interval_move = 0.5
-        self.interval_stop = 7.
+        self.interval_stop = 4.
         self.prepare = 0.    
         self.end_ts = self.prepare + 1. + (self.interval_move * 6 + self.interval_stop) * self.loop - self.interval_move
 

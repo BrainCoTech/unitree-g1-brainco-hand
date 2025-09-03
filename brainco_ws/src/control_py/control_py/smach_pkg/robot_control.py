@@ -129,11 +129,12 @@ class RobotControl:
     
     # 为下个匀速运动记录起始状态
     def store_curr_cmd(self, arm):
-        low_cmd = [self.low_cmd.motor_cmd[joint].q for joint in self.arm.arm_joints]
-        if arm != "right":
-            self.arm_state_st[:5] =  low_cmd[:5]
-        if arm != "left":
-            self.arm_state_st[5:] =  low_cmd[5:]
+        if self.low_cmd is not None and self.arm_state_st is not None:
+            low_cmd = [self.low_cmd.motor_cmd[joint].q for joint in self.arm.arm_joints]
+            if arm != "right":
+                self.arm_state_st[:5] =  low_cmd[:5]
+            if arm != "left":
+                self.arm_state_st[5:] =  low_cmd[5:]
 
 
     
