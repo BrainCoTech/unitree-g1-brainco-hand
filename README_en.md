@@ -6,16 +6,17 @@ Tutorial on adapting BrainCo Revo2 hands for Unitree G1 robot. Install, setup an
 
 ## Repository Overview
 
-#### Lastest version
+### Lastest version
 
 Update 2025.11.13: Support for Unitree G1 advanced robot (29-DOF)
+
 Update 2025.09.03: Fixed the issue where the arm behaved abnormally when immediately deactivated during the first action
 
-##### Previous Versions
+#### Previous Versions
 
 v1.0.0 – Supports G1-23DOF only. Download on the [Releases page](../../releases)
 
-#### brainco_ws
+### brainco_ws
 
 G1 arm IK calculation is based on [Unitree/xr_teleoperate](https://github.com/unitreerobotics/xr_teleoperate/blob/main/teleop/robot_control/robot_arm_ik.py). Dual-arm dual-hand control is based on ROS2.
 - Main control [smach_action.py](./brainco_ws/src/control_py/control_py/smach_action.py)
@@ -23,7 +24,7 @@ G1 arm IK calculation is based on [Unitree/xr_teleoperate](https://github.com/un
 - The G1 Dof can be modified in `brainco_ws\src\control_py\config\smach_config.yaml`.
 
 
-#### ros2_stark_ws
+### ros2_stark_ws
 
 Difference between this SDK version and [the original version](https://github.com/BrainCoTech/stark-serialport-example/tree/main/ros2_stark_ws):  
 The BrainCo hands communicates with Unitree G1 via **dual 485** serial ports, i.e., in a single ROS node, the left and right hands communicate simultaneously through `/dev/ttyUSB0` and `/dev/ttyUSB1`.
