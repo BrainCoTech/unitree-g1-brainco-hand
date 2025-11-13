@@ -9,8 +9,8 @@ def generate_launch_description():
 	return launch.LaunchDescription([
 		launch_ros.actions.Node(
 			package='control_py',
-			executable='trans_node',
-			name='trans_node',
+			executable='smach_trans_node',
+			name='smach_trans_node',
 			parameters=[config]
 		),
 	])

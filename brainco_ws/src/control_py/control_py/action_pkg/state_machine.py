@@ -1,5 +1,13 @@
 from transitions.extensions import HierarchicalMachine as Machine
 
+import sys, os
+pkgs_dir = os.getcwd() + '/src/control_py/control_py/'
+sys.path.append(pkgs_dir)
+
+from loguru import logger
+from utils.loguru_settings import setup_loguru
+setup_loguru(log_folder_path="log", show_on_terminal=True) # 设置日志
+
 class LifecycleStateMachine:
     def __init__(self, action_num,
                  on_configure_callback=None,
@@ -18,7 +26,10 @@ class LifecycleStateMachine:
             self.callbacks[f'active_{i}'] = kwargs.get(f'on_active_{i}_callback', None)
 
         # 子状态参数
-        self.substate_params = {str(i): f'param{i}' for i in range(self.num_active_states)}
+        # self.substate_params = {str(i): f'param{i}' for i in range(self.num_active_states)}
+        # 子状态参数初始化为空字典（结构化参数）
+        self.substate_params = {str(i): {} for i in range(self.num_active_states)}
+        
         self.substates = list(self.substate_params.keys())
         self.substate_trans_str = 'start_'
 
@@ -124,11 +135,16 @@ class LifecycleStateMachine:
             substate = self.state.split('.')[1]
             self.substate_params[substate] = param
 
-        return True, f"triggered event '{event_name}' → new state: {self.state}"
+        return True, f"Triggered event '{event_name}' → New state: {self.state}"
 
     def get_available_events(self):
         available_list = []
-        available = self.available_transition[self.state]
+
+        try:
+            available = self.available_transition[self.state]
+        except KeyError:
+            logger.info(f"Shutdown")
+            raise
         
         for trans, dst in available:
             trans_str = trans + "->" + dst
