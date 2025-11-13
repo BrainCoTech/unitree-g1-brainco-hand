@@ -1,6 +1,6 @@
 # FAQ
 
-English Version | [中文版](./FAQ.md)
+English Version | [中文版](./FAQ_zh.md)
 
 ## 1. Unable to connect to the network after configuring a custom network
 
