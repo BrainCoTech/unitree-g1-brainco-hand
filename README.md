@@ -8,14 +8,18 @@
 
 #### 最新版本
 
+更新 2025.11.13 : 更新宇树G1进阶版(29自由度)
 更新 2025.09.03 : 修复了做第一个动作时立即deactivate手臂异常运动的问题
+
+##### 历史版本
+v1.0.0 - 仅支持 G1-23DOF 可在 [Releases 页面](../../releases) 中下载。
 
 #### brainco_ws
 
 G1手臂IK计算基于宇树官方示例[Unitree/xr_teleoperate](https://github.com/unitreerobotics/xr_teleoperate/blob/main/teleop/robot_control/robot_arm_ik.py)。双臂双手控制基于ROS2。
 - Main control [smach_action.py](./brainco_ws/src/control_py/control_py/smach_action.py)
 - State machine transition client [keyboard_call.py](./brainco_ws/src/control_py/control_py/keyboard_call.py)
-
+- G1自由度在 `brainco_ws\src\control_py\config\smach_config.yaml` 里修改
 
 #### ros2_stark_ws
 
@@ -131,6 +135,13 @@ cd ~/unitree-g1-brainco-hand/brainco_ws
 chmod +x ./launch/launch_trans.sh
 chmod +x ./launch/launch_robot.sh
 ```
+
+#### 下载宇树G1模型
+
+[g1-description](https://github.com/unitreerobotics/unitree_ros/tree/master/robots/g1_description)
+
+打开`brainco_ws\src\control_py\control_py\action_pkg\robot_control.py`, 修改`arm_urdf_path`路径。
+
 
 #### 配置灵巧手
 打开`ros2_stark_ws/src/ros2_stark_controller/config/params_v2_double.yaml`，根据灵巧手配置修改参数，通常使用默认参数。  

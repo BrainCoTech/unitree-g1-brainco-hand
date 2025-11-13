@@ -8,13 +8,19 @@ Tutorial on adapting BrainCo Revo2 hands for Unitree G1 robot. Install, setup an
 
 #### Lastest version
 
+Update 2025.11.13: Support for Unitree G1 advanced robot (29-DOF)
 Update 2025.09.03: Fixed the issue where the arm behaved abnormally when immediately deactivated during the first action
+
+##### Previous Versions
+
+v1.0.0 – Supports G1-23DOF only. Download on the [Releases page](../../releases)
 
 #### brainco_ws
 
 G1 arm IK calculation is based on [Unitree/xr_teleoperate](https://github.com/unitreerobotics/xr_teleoperate/blob/main/teleop/robot_control/robot_arm_ik.py). Dual-arm dual-hand control is based on ROS2.
 - Main control [smach_action.py](./brainco_ws/src/control_py/control_py/smach_action.py)
 - State machine transition client [keyboard_call.py](./brainco_ws/src/control_py/control_py/keyboard_call.py)
+- The G1 Dof can be modified in `brainco_ws\src\control_py\config\smach_config.yaml`.
 
 
 #### ros2_stark_ws
@@ -131,6 +137,12 @@ cd ~/unitree-g1-brainco-hand/brainco_ws
 chmod +x ./launch/launch_trans.sh
 chmod +x ./launch/launch_robot.sh
 ```
+
+#### Download the Unitree G1 model
+
+[g1-description](https://github.com/unitreerobotics/unitree_ros/tree/master/robots/g1_description)
+
+Open `brainco_ws\src\control_py\control_py\action_pkg\robot_control.py` and modify the `arm_urdf_path` path.
 
 #### Configure BrainCo Hands
 Open `ros2_stark_ws/src/ros2_stark_controller/config/params_v2_double.yaml`and modify parameters if needed (You can use default settings).  

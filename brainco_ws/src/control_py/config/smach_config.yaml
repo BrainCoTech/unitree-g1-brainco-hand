@@ -1,6 +1,6 @@
 smach_main_node:
   ros__parameters:
-    robot_dof: 29
+    robot_dof: 29 # G1 Dof (only support 23 and 29)
     log_time_screen: False
     log_armstate_screen: False
     log_armcmd_screen: False
