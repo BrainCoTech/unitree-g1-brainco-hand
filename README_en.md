@@ -193,4 +193,4 @@ Without `l/r`, both hands are controlled.
 
 
 ## FAQ
-[FAQ.md](./FAQ.md).
+[FAQ 中文](./FAQ_zh.md) or [FAQ English version](./FAQ_en.md)
