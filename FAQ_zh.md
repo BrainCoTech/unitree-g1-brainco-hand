@@ -1,5 +1,6 @@
 # FAQ
 
+[English Version](./FAQ_en.md) | 中文版
 
 ## 1. 配置自定义网络后，可能无法连接网络
 
