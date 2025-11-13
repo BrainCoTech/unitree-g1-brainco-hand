@@ -27,8 +27,8 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            "smach_node = control_py.smach_action:main",
-            "trans_node = control_py.keyboard_call:main",
+            "smach_main_node = control_py.smach_main_srv:main",
+            "smach_trans_node = control_py.smach_trans_cli:main",
         ],
     },
 )

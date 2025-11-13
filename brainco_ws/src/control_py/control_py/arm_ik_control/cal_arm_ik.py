@@ -5,17 +5,25 @@ import numpy as np
 pkgs_dir = os.getcwd() + '/src/control_py/control_py/'
 sys.path.append(pkgs_dir)
 
-from arm_ik_control.robot_arm_ik_side import G1_23_ArmIK
+from arm_ik_control.robot_arm_ik_side import G1_23_ArmIK, G1_29_ArmIK
 from arm_ik_control.tv_wrapper import TeleVisionWrapper
 
-from arm_ik_control.arm_23_joint import G1JointIndex
+from arm_ik_control.arm_joints import G1JointIndex
 
 
 class ArmIK:
 
-    def __init__(self, urdf_path, urdf_folder):
+    def __init__(self, urdf_path, urdf_folder, robot_dof):
 
-        self.arm_ik = G1_23_ArmIK(urdf_path, urdf_folder)
+        if robot_dof not in (23, 29):
+            raise ValueError(f"robot_dof must be 23 or 29, got {robot_dof}")
+
+        self.robot_dof = robot_dof
+
+        if self.robot_dof == 23:
+            self.arm_ik = G1_23_ArmIK(urdf_path, urdf_folder)
+        else:
+            self.arm_ik = G1_29_ArmIK(urdf_path, urdf_folder)
         
         self.head_pos = [1., 0., 0., 0., 
                          0., 1., 0., 0., 
@@ -58,6 +66,23 @@ class ArmIK:
         # return self.arm_ik.solve_ik(left_wrist, right_wrist, np.array(self.curr_lr_q), np.array(self.curr_lr_dq))
         return self.arm_ik.solve_ik(left_wrist, right_wrist)
     
+
+    def cal_fk(self, left_right_q):
+
+        left_pose, right_pose = self.arm_ik.solve_fk(np.array(left_right_q))
+
+        self.left_wrist_pos = self.pos_convert(self.left_wrist)
+        self.right_wrist_pos = self.pos_convert(self.right_wrist)
+        
+        head_mat = np.array(self.head_pos).reshape(4, 4, order="F")
+        left_wrist_mat = np.array(self.left_wrist_pos).reshape(4, 4, order="F")
+        right_wrist_mat = np.array(self.right_wrist_pos).reshape(4, 4, order="F")
+
+        tv_wrapper = TeleVisionWrapper(head_mat, left_wrist_mat, right_wrist_mat)
+        left_wrist, right_wrist = tv_wrapper.reverse_get_data(left_pose, right_pose)
+
+        return self.pos_convert_inverse(left_wrist), self.pos_convert_inverse(right_wrist)
+
 
     def cal_ik_side(self, side):
         self.left_wrist_pos = self.pos_convert(self.left_wrist)
@@ -147,39 +172,115 @@ class ArmIK:
         return rot_list + arm_pos_angle[:3] + [1.]
     
 
+    def pos_convert_inverse(self, matrix):
+        """
+        Converts a 4x4 transformation matrix back to arm position [x, y, z, c, b, a] (xyz and Euler angles in radians).
+
+        :param matrix: 4x4 transformation matrix containing rotation and translation.
+        :return: A list containing [x, y, z, c, b, a]
+        """
+        # Extract the rotation part (3x3 matrix)
+        rot = matrix[:3, :3]
+        
+        # Extract the translation part (x, y, z)
+        translation = matrix[:3, 3]
+        
+        # Calculate the Euler angles (c, b, a)
+        b = np.arcsin(-rot[2, 0])  # Pitch (around Y-axis)
+        
+        # To avoid gimbal lock, check if cos(b) is near zero
+        if np.cos(b) != 0:
+            a = np.arctan2(rot[1, 0], rot[0, 0])  # Roll (around Z-axis)
+            c = np.arctan2(rot[2, 1], rot[2, 2])  # Yaw (around X-axis)
+        else:
+            a = 0  # when cos(b) == 0, the roll angle is undefined
+            c = np.arctan2(rot[1, 2], rot[1, 1])  # Special case
+        
+        # Convert angles from radians to degrees
+        a = np.degrees(a)
+        b = np.degrees(b)
+        c = np.degrees(c)
+        
+        # Return the arm position as [x, y, z, c, b, a]
+        return list(translation) + [c, b, a]
+    
+
 
 class Arm:
-    def __init__(self):
+    def __init__(self, robot_dof: int):
+
+        if robot_dof not in (23, 29):
+            raise ValueError(f"robot_dof must be 23 or 29, got {robot_dof}")
+        self.robot_dof = robot_dof
+
+        if self.robot_dof == 23:
+        
+            # self.kp = [100., 100., 100., 100., 100., 100., 100., 100., 100., 100.]
+            self.kp = [100., 100., 100., 100., 100., 
+                       100., 100., 100., 100., 100.]
+            self.kd = 1.5
+            self.dq = 0.
+            # self.tau_ff = [-1.5, 1.0, 0.7, -0.5, 0., -1.5, -0.5, -0.9, -1.5, -1.7]
+            self.tau_ff = [-1.5, 0.5, 0.7, -1.2, 0., 
+                           -1.5, -0.5, -0.57, -1.5, -0.17]
 
 
-        # self.kp = [100., 100., 100., 100., 100., 100., 100., 100., 100., 100.]
-        self.kp = [100., 100., 100., 100., 100., 100., 100., 100., 100., 100.]
-        self.kd = 1.5
-        self.dq = 0.
-        # self.tau_ff = [-1.5, 1.0, 0.7, -0.5, 0., -1.5, -0.5, -0.9, -1.5, -1.7]
-        self.tau_ff = [-1.5, 0.5, 0.7, -1.2, 0., -1.5, -0.5, -0.57, -1.5, -0.17]
+            self.ik = None
+
+            self.arm_joints = [
+            G1JointIndex.LeftShoulderPitch, 
+            G1JointIndex.LeftShoulderRoll, 
+            G1JointIndex.LeftShoulderYaw,
+            G1JointIndex.LeftElbow, 
+            G1JointIndex.LeftWristRoll,   
+            G1JointIndex.RightShoulderPitch, 
+            G1JointIndex.RightShoulderRoll, 
+            G1JointIndex.RightShoulderYaw,
+            G1JointIndex.RightElbow, 
+            G1JointIndex.RightWristRoll,
+            ]
+
+            self.arm_joints_name = ['shoulder_pitch_joint', 
+                                    'shoulder_roll_joint', 
+                                    'shoulder_yaw_joint',
+                                    'elbow_joint', 
+                                    'wrist_roll_joint']
+            
+        else:
+            self.kp = [100., 100., 100., 100., 100., 100., 100., 
+                       100., 100., 100., 100., 100., 100., 100.]
+            self.kd = 1.5
+            self.dq = 0.
+            self.tau_ff = [-1.5, 0.5, 0.7, -1.2, 0., -1.5, -0.5, 
+                           -0.57, -1.5, -0.17, -0.5, -0.57, -1.5, -0.17]
 
 
-        self.ik = None
+            self.ik = None
 
-        self.arm_joints = [
-          G1JointIndex.LeftShoulderPitch, 
-          G1JointIndex.LeftShoulderRoll, 
-          G1JointIndex.LeftShoulderYaw,
-          G1JointIndex.LeftElbow, 
-          G1JointIndex.LeftWristRoll,
-          G1JointIndex.RightShoulderPitch, 
-          G1JointIndex.RightShoulderRoll, 
-          G1JointIndex.RightShoulderYaw,
-          G1JointIndex.RightElbow, 
-          G1JointIndex.RightWristRoll,
-        ]
+            self.arm_joints = [
+            G1JointIndex.LeftShoulderPitch, 
+            G1JointIndex.LeftShoulderRoll, 
+            G1JointIndex.LeftShoulderYaw,
+            G1JointIndex.LeftElbow, 
+            G1JointIndex.LeftWristRoll,
+            G1JointIndex.LeftWristPitch,   
+            G1JointIndex.LeftWristYaw,
+            G1JointIndex.RightShoulderPitch, 
+            G1JointIndex.RightShoulderRoll, 
+            G1JointIndex.RightShoulderYaw,
+            G1JointIndex.RightElbow, 
+            G1JointIndex.RightWristRoll,
+            G1JointIndex.RightWristPitch,
+            G1JointIndex.RightWristYaw,
+            ]
 
-        self.arm_joints_name = ['shoulder_pitch_joint', 
-                                'shoulder_roll_joint', 
-                                'shoulder_yaw_joint',
-                                'elbow_joint', 
-                                'wrist_roll_joint']
+            self.arm_joints_name = ['shoulder_pitch_joint', 
+                                    'shoulder_roll_joint', 
+                                    'shoulder_yaw_joint',
+                                    'elbow_joint', 
+                                    'wrist_roll_joint',
+                                    'wrist_pitch_joint',
+                                    'wrist_yaw_joint']
         
         self.print_arm()
     
@@ -190,7 +291,7 @@ class Arm:
 
     
     def init_ik(self, urdf_path, urdf_folder):
-        self.ik = ArmIK(urdf_path, urdf_folder)
+        self.ik = ArmIK(urdf_path, urdf_folder, self.robot_dof)
 
 
 

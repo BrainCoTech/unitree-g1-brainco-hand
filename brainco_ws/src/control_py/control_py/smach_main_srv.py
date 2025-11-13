@@ -1,19 +1,24 @@
-import sys, os
+import sys, os, traceback
 import numpy as np
 import rclpy
 from rclpy.node import Node
-from std_msgs.msg import String
 from std_srvs.srv import Trigger  # 用标准的触发服务，返回string message
 
 pkgs_dir = os.getcwd() + '/src/control_py/control_py/'
 sys.path.append(pkgs_dir)
 
-from sm_interfaces.srv import SmachCmd  # 换成你自己的srv包名
-from smach_pkg.state_machine import LifecycleStateMachine
-from smach_pkg.tasks import *
+from sm_interfaces.srv import SmachCmd
+from sm_interfaces.msg import SmachParam
+from action_pkg.state_machine import LifecycleStateMachine
+from action_pkg.tasks import RobotTasks
+from action_pkg.tasks_handler import RobotLifecycleActions
+
+from loguru import logger
+from utils.loguru_settings import setup_loguru
+setup_loguru(log_folder_path="log", show_on_terminal=True) # 设置日志
 
 
-class LifecyclePublisher(RobotTasks, Node):
+class LifecyclePublisher(RobotTasks, RobotLifecycleActions, Node):
     def __init__(self, name):
         super().__init__(name)
 
@@ -23,16 +28,21 @@ class LifecyclePublisher(RobotTasks, Node):
             'log_time_screen': 'log_time',
             'log_armstate_screen': 'log_arm_state',
             'log_armcmd_screen': 'log_arm_cmd',
+            'log_wristpose_screen': 'log_wrist_pose',
             'log_hand_screen': 'log_hand'
         }
         # 循环声明参数并赋值
         for param_name, attr_name in param_map.items():
-            self.declare_parameter(param_name, True)  # 默认值 True
+            self.declare_parameter(param_name, False)  # 默认值 False
             setattr(self, attr_name, self.get_parameter(param_name).get_parameter_value().bool_value)
-        
-        
 
-        self.action_num = 5 # action 0~4
+        self.declare_parameter('robot_dof', 23) # 声明参数
+        self.robot_dof = self.get_parameter('robot_dof').value # 获取参数值
+        logger.info(f"1-robot_dof: {self.robot_dof}")
+
+        self.robot_control_initialization()
+
+        self.action_num = RobotLifecycleActions.action_num # 包含静止
         
         # action 回调
         active_callbacks = {
@@ -52,9 +62,9 @@ class LifecyclePublisher(RobotTasks, Node):
         self.srv_available_trans = self.create_service(Trigger, 'get_available_transitions', self.get_transitions_callback)
         self.srv_current_state = self.create_service(Trigger, 'get_current_state', self.get_state_callback)
 
-        self.param = None
+        self.param = SmachParam()
 
-        self.get_logger().info("Request 'configure' to start\n")
+        logger.info("Request 'configure' to start\n")
 
 
     # 准备阶段
@@ -80,101 +90,18 @@ class LifecyclePublisher(RobotTasks, Node):
         self.clear_timer()
         self.store_curr_cmd("both")
 
-    # Active 1 打招呼
-    def on_active_1_handler(self):
-        self.get_logger().info(f"Enter state {self.sm.get_state()} 'Hello'")
-        self.clear_timer()
-        self.store_curr_cmd("both")
-        self._timer = self.create_timer(0.01, self.timer_hello)
-        self.get_logger().info(f"New timer created.")
-
-    # Active 2 点赞
-    def on_active_2_handler(self):
-        self.get_logger().info(f"Enter state {self.sm.get_state()} 'Like'")
-        self.clear_timer()
-        self.store_curr_cmd("both")
-        self._timer = self.create_timer(0.01, self.timer_like)
-        self.get_logger().info(f"New timer created.")
-
-    # Active 3 石头剪刀布
-    def on_active_3_handler(self):
-        self.get_logger().info(f"Enter state {self.sm.get_state()} 'Rock-Paper-Scissors'")
-        self.clear_timer()
-        self.store_curr_cmd("both")
-        # 石头剪刀布参数
-        self.curr_note_left = 0
-        self.curr_note_right = 0
-        self.gesture_list = ["石头","剪刀","布"]
-        self.loop = 100
-        self.interval_move = 0.5
-        self.interval_stop = 4.
-        self.prepare = 0.    
-        self.end_ts = self.prepare + 1. + (self.interval_move * 6 + self.interval_stop) * self.loop - self.interval_move
-
-        self._timer = self.create_timer(0.01, self.timer_rps)
-        self.get_logger().info(f"New timer created.")
-
-    # Active 4 握手
-    def on_active_4_handler(self):
-        self.get_logger().info(f"Enter state {self.sm.get_state()} 'Handshake'")
-        self.clear_timer()
-        self.store_curr_cmd("both")
-        self._timer = self.create_timer(0.01, self.timer_hand_shake)
-        self.get_logger().info(f"New timer created.")
-
     # Timer
     def timer_get_ready(self):
         self.time_ += self.control_dt_
         self.arm_hand_start(0, 2, update_arm_q=self.zero_arm_q, update_hand=self.zero_hand)
         self.publish_all()
 
-    def timer_hello(self):
-        self.time_ += self.control_dt_
-        if self.param != "left" and self.param != "right":
-            self.show_hello(0., 10, "both", speed=1.5)
-        else:
-            arm_side_opp = "left" if self.param == "right" else "right"
-            self.show_hello(0., 10, self.param, speed=1.5)
-            self.arm_back_zero(0., 2, arm_side_opp)
-        self.publish_all()
-
-    def timer_like(self):
-        self.time_ += self.control_dt_
-        if self.param != "left" and self.param != "right":
-            self.show_like(0., 1, "both")
-        else:
-            arm_side_opp = "left" if self.param == "right" else "right"
-            self.show_like(0., 1, self.param)
-            self.arm_back_zero(0., 2, arm_side_opp)
-        self.publish_all()
-
-    def timer_hand_shake(self):
-        self.time_ += self.control_dt_
-        if self.param != "left" and self.param != "right":
-            self.hand_shake(0., 2, 2, "both")
-        else:
-            arm_side_opp = "left" if self.param == "right" else "right"
-            self.hand_shake(0., 2, 2, self.param)
-            self.arm_back_zero(0., 2, arm_side_opp)
-        self.publish_all()
-
-    def timer_rps(self):
-        self.time_ += self.control_dt_
-        if self.param != "left" and self.param != "right":
-            self.play_rps(0., 2, self.end_ts, self.interval_stop, self.interval_move, "both")
-        else:
-            arm_side_opp = "left" if self.param == "right" else "right"
-            self.play_rps(0., 2, self.end_ts, self.interval_stop, self.interval_move, self.param)
-            self.arm_back_zero(0., 2, arm_side_opp)
-        self.publish_all()  
-
-
 
     def handle_command(self, request, response):
         # 接收服务请求，data为事件名，param为额外参数
         event_name = request.data
         self.param = request.param if request.param else None
-        print(f"Received {event_name} and {self.param}")
+        # print(f"Received {event_name} and {self.param}")
 
         # 调用状态机事件，支持参数传递
         success, message = self.sm.trigger_event(event_name, param=self.param)
@@ -183,8 +110,12 @@ class LifecyclePublisher(RobotTasks, Node):
         response.message = message
         response.current_state = self.sm.get_state()
 
-        self.get_logger().info(f"Service request: trigger event '{event_name}', parameter '{self.param}'")
-        self.get_logger().info(f"Result: {message}\n")
+        # self.get_logger().info(f"Service request: trigger event '{event_name}', parameter '{self.param}'")
+        self.get_logger().info(
+            f"Service request: trigger event '{event_name}', "
+            f"handside='{self.param.handside}', extra='{self.param.extra}'"
+        )
+        logger.info(f"{message}\n")
 
         return response
     
@@ -204,16 +135,20 @@ def main(args=None):
     rclpy.init(args=args)
 
     executor = rclpy.executors.SingleThreadedExecutor()
-    
-    node = LifecyclePublisher("smach_node")
+    # node = LifecyclePublisher(29, "smach_main_node")
+    node = LifecyclePublisher("smach_main_node")
     executor.add_node(node)
     
     try:
         # spin()会使节点保持活动，并响应外部的生命周期管理命令
         # 它不会自动触发状态转换，这些转换需要外部通过服务调用来发起
         executor.spin()
-    except (KeyboardInterrupt, rclpy.executors.ExternalShutdownException):
-        pass
+    # except (KeyboardInterrupt, rclpy.executors.ExternalShutdownException, KeyError):
+    #     node.get_logger().info("KeyboardInterrupt by user")
+    except Exception as e:
+        # node.get_logger().error(f"{e}")
+        tb_str = ''.join(traceback.format_exception(type(e), e, e.__traceback__))
+        node.get_logger().error(f"Unhandled Exception:\n{tb_str}")
     finally:
         node.get_logger().info("Shutting down node...")
         node.destroy_node() # 这会处理一些内部清理

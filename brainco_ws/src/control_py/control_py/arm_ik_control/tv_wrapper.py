@@ -150,28 +150,38 @@ class TeleVisionWrapper:
 
         return head_rmat, unitree_left_wrist, unitree_right_wrist
     
+    
+    
+    def reverse_get_data(self, unitree_left_wrist, unitree_right_wrist):
 
-    def get_data_single(self, arm):
+        head_pos = [1., 0., 0., 0., 
+                    0., 1., 0., 0., 
+                    0., 0., 1., 0., 
+                    0., 0., 0., 1.]
+        
+        head_mat = np.array(head_pos).reshape(4, 4, order="F")
+        
+        
+        unitree_left_wrist[0, 3] -=0.15
+        unitree_right_wrist[0,3] -=0.15
+        unitree_left_wrist[2, 3] -=0.45
+        unitree_right_wrist[2,3] -=0.45
 
-        # --------------------------------wrist-------------------------------------
-
-        # TeleVision obtains a basis coordinate that is OpenXR Convention
-        head_vuer_mat, head_flag = mat_update(const_head_vuer_mat, self.head_matrix.copy())
-        arm_wrist_vuer_mat, arm_wrist_flag  = mat_update(eval("const_" + arm + "_wrist_vuer_mat"), self.__dict__[arm + "_hand"].copy())
-
+        head_vuer_mat, head_flag = mat_update(const_head_vuer_mat, head_mat.copy())
         head_mat = T_robot_openxr @ head_vuer_mat @ fast_mat_inv(T_robot_openxr)
-        arm_wrist_mat  = T_robot_openxr @ arm_wrist_vuer_mat @ fast_mat_inv(T_robot_openxr)
 
-        unitree_arm_wrist = arm_wrist_mat @ (eval("T_to_unitree_"+ arm + "_wrist") if arm_wrist_flag else np.eye(4))
+        unitree_left_wrist[0:3, 3]  = unitree_left_wrist[0:3, 3] + head_mat[0:3, 3]
+        unitree_right_wrist[0:3, 3] = unitree_right_wrist[0:3, 3] + head_mat[0:3, 3]
 
-        # Transfer from WORLD to HEAD coordinate (translation only).
-        unitree_arm_wrist[0:3, 3]  = unitree_arm_wrist[0:3, 3] - head_mat[0:3, 3]
+        unitree_left_wrist_vuer_mat, left_wrist_flag  = mat_update(const_left_wrist_vuer_mat, unitree_left_wrist.copy())
+        unitree_right_wrist_vuer_mat, right_wrist_flag = mat_update(const_right_wrist_vuer_mat, unitree_right_wrist.copy())
 
+        # 逆转 Unitree → Robot
+        left_wrist_mat = unitree_left_wrist_vuer_mat @ T_to_unitree_left_wrist.T if left_wrist_flag else unitree_left_wrist_vuer_mat
+        right_wrist_mat = unitree_right_wrist_vuer_mat @ T_to_unitree_right_wrist.T if right_wrist_flag else unitree_right_wrist_vuer_mat
 
-        # --------------------------------offset-------------------------------------
-
-        head_rmat = head_mat[:3, :3]
-        unitree_arm_wrist[0, 3] +=0.15
-        unitree_arm_wrist[2, 3] +=0.45
-
-        return head_rmat, unitree_arm_wrist
+        # 逆转: 将 WristMat 转换回 OpenXR 协议中的 VuerMat
+        left_wrist_vuer_mat_inv = fast_mat_inv(T_robot_openxr) @ left_wrist_mat @ T_robot_openxr
+        right_wrist_vuer_mat_inv = fast_mat_inv(T_robot_openxr) @ right_wrist_mat @ T_robot_openxr
+        
+        return left_wrist_vuer_mat_inv, right_wrist_vuer_mat_inv

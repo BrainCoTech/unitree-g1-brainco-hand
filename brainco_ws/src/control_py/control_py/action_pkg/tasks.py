@@ -4,7 +4,7 @@ import numpy as np
 pkgs_dir = pkgs_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(pkgs_dir)
 
-from smach_pkg.robot_control import *
+from action_pkg.robot_control import *
 
 class RobotTasks(RobotControl):
     def __init__(self, *args, **kwargs):

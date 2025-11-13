@@ -1,6 +1,8 @@
-smach_node:
+smach_main_node:
   ros__parameters:
+    robot_dof: 29
     log_time_screen: False
     log_armstate_screen: False
     log_armcmd_screen: False
+    log_wristpose_screen: False
     log_hand_screen: False

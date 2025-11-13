@@ -25,6 +25,7 @@ find_package(rosidl_default_generators REQUIRED)
 
 rosidl_generate_interfaces(${PROJECT_NAME}
   "srv/SmachCmd.srv"
+  "msg/SmachParam.msg"
 )
 
 if(BUILD_TESTING)

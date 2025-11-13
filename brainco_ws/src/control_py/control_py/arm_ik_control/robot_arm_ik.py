@@ -178,8 +178,6 @@ class G1_23_ArmIK:
         robot_right_pose[:3, 3] *= scale_factor
         return robot_left_pose, robot_right_pose
 
-    
-    
     def solve_ik(self, left_wrist, right_wrist, current_lr_arm_motor_q = None, current_lr_arm_motor_dq = None):
         if current_lr_arm_motor_q is not None:
             self.init_data = current_lr_arm_motor_q
