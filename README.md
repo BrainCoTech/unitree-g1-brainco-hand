@@ -188,4 +188,4 @@ cd ~/unitree-g1-brainco-hand/brainco_ws     # 进入工作空间
 
 
 ## FAQ
-[FAQ.md](./FAQ.md).
+[FAQ 中文](./FAQ_zh.md) or [FAQ English version](./FAQ_en.md)
