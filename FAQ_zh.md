@@ -108,7 +108,11 @@ unitree@ubuntu:~$ ping marketplace.visualstudio.com
 ```sh
 unitree@ubuntu:~$ cat /etc/resolv.conf
 ```
-显示 `nameservers. nameserver 127.0.0.53 search Huawei.Local`  
+显示 
+```
+nameserver 127.0.0.53 
+search Huawei.Local
+``` 
 这意味着 Ubuntu 正在使用 systemd-resolved 的本地 DNS 缓存代理（127.0.0.53），但它无法解析外部域名。
 
 4. 运行：
