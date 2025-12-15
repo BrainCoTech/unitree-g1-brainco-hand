@@ -8,6 +8,8 @@ Tutorial on adapting BrainCo Revo2 hands for Unitree G1 robot. Install, setup an
 
 ### Lastest version
 
+Update 2025.12.15: debug
+
 Update 2025.11.13: Support for Unitree G1 advanced robot (29-DOF)
 
 Update 2025.09.03: Fixed the issue where the arm behaved abnormally when immediately deactivated during the first action
