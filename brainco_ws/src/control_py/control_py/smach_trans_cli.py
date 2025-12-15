@@ -3,7 +3,7 @@ from rclpy.node import Node
 from sm_interfaces.srv import SmachCmd
 from sm_interfaces.msg import SmachParam
 from std_srvs.srv import Trigger
-import logging, os, sys
+import os, sys
 
 pkgs_dir = os.getcwd() + '/src/control_py/control_py/'
 sys.path.append(pkgs_dir)
@@ -83,7 +83,6 @@ class KeyboardServiceCaller(Node):
         future = self.client_available_trans.call_async(req)
         rclpy.spin_until_future_complete(self, future)
         if future.result() is not None:
-            # self.get_logger().info(f'Success: {future.result().success}, Message: {future.result().message}')
             return future.result()
         else:
             self.get_logger().error("Service 'get_available_transitions' call failed")
@@ -94,18 +93,10 @@ class KeyboardServiceCaller(Node):
         future = self.client_current_state.call_async(req)
         rclpy.spin_until_future_complete(self, future)
         if future.result() is not None:
-            # self.get_logger().info(f'Success: {future.result().success}, Message: {future.result().message}')
             return future.result()
         else:
             self.get_logger().error("Service 'get_current_state' call failed")
             return None
-    
-    
-    # def key_to_service_call(self, key, param="0"):
-    #     if self.cmd == key:
-    #         service = self.service_keys[key]
-    #         self.get_logger().info(f"Pressed '{key}', calling service {service} param = {param} ...")
-    #         self.call_service(service, param)
 
     def key_to_service_call(self, key):
         if self.cmd == key:
@@ -169,11 +160,6 @@ class KeyboardServiceCaller(Node):
             self.get_logger().info('Interrupted by user.')
 
 def main(args=None):
-    # rclpy.init(args=args)
-    # keyboard_caller = KeyboardServiceCaller("smach_trans_node")
-    # keyboard_caller.run()
-    # keyboard_caller.destroy_node()
-    # rclpy.shutdown()
     rclpy.init(args=args)
 
     executor = rclpy.executors.SingleThreadedExecutor()

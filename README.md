@@ -8,6 +8,8 @@
 
 ### 最新版本
 
+更新 2025.12.15 : debug
+
 更新 2025.11.13 : 更新宇树G1进阶版(29自由度)
 
 更新 2025.09.03 : 修复了做第一个动作时立即deactivate手臂异常运动的问题
@@ -102,6 +104,7 @@ pip install transitions
 pip install rospkg
 pip install -U colcon-common-extensions
 # 其他依赖
+pip install loguru
 pip install matplotlib
 pip install empy==3.3.2
 pip install lark-parser
