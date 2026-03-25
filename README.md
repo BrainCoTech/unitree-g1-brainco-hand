@@ -94,6 +94,6 @@ cd ~/unitree_sdk2/build/bin
 # 测试机械臂与手部（无论有线或无线，此处必须使用 eth0）
 ./g1_arm7_brainco_example eth0
 ```
-按下 ENTER 手臂和手开始运动
+按下 `ENTER` 手臂和手开始运动
 
-按下 R 手臂和手复位
+按下 `R` 手臂和手复位
