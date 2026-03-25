@@ -1,6 +1,8 @@
 
 # Introduction
 
+English Version | [中文版](./README.md)
+
 Extensions of [unitreerobotics/brainco_hand_service]((https://github.com/unitreerobotics/brainco_hand_service))
 
 ## Setup
