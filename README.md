@@ -1,6 +1,8 @@
 
 # 简介
 
+[English Version](./README_en.md) | 中文版
+
 本项目为 [unitreerobotics/brainco_hand_service]((https://github.com/unitreerobotics/brainco_hand_service))
 
 ## 环境准备
@@ -90,5 +92,7 @@ sudo ./test_brainco_hand_server right
 ```sh
 cd ~/unitree_sdk2/build/bin
 # 测试机械臂与手部（无论有线或无线，此处必须使用 eth0）
-./g1_arm7_brainco_sdk_dds_example eth0
+./g1_arm7_brainco_example eth0
 ```
+按下 ENTER 手臂和手开始运动
+按下 R 手臂和手复位

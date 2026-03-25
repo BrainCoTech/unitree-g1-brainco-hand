@@ -92,5 +92,7 @@ sudo ./test_brainco_hand_server right
 ```sh
 cd ~/unitree_sdk2/build/bin
 # test arm and hand (whether wired or wireless, eth0 must be used here.)
-./g1_arm7_brainco_sdk_dds_example eth0
+./g1_arm7_brainco_example eth0
 ```
+Press ENTER to start arm and hand motion.
+Press R to Reset.

@@ -215,7 +215,6 @@ int main(int argc, char const *argv[]) {
   std::cout << std::endl;
 
   // set init pos
-  std::cout << "Initailizing arms ...";
   float init_time = 2.0f;
   int init_time_steps = static_cast<int>(init_time / control_dt);
 
@@ -224,7 +223,6 @@ int main(int argc, char const *argv[]) {
     weight = 1.0;
     msg.motor_cmd().at(JointIndex::kNotUsedJoint).q(weight);
     float phase = 1.0 * i / init_time_steps;
-    std::cout << "Phase: " << phase << std::endl;
 
     if (!stop_flag) {
         // set control joints
@@ -245,8 +243,7 @@ int main(int argc, char const *argv[]) {
   }
 
   // start control
-  std::cout << "Start arm movement." << std::endl;
-std::cout << "Press 'r' to reset." << std::endl;
+    std::cout << "Press 'r' to reset." << std::endl;
   
   // 手臂运动参数
   float amplitude = 0.1f;   // 摆动幅度（弧度）
@@ -260,7 +257,7 @@ std::cout << "Press 'r' to reset." << std::endl;
         // 键盘检测
         int key = kbhit();
         if ((key == 'r' || key == 'R') && !reset_mode) {
-            std::cout << "STOP TRIGGERED!" << std::endl;
+            std::cout << "\nSTOP TRIGGERED!" << std::endl;
             stop_flag = true;
 
             // 用当前控制值作为复位起点（关键优化）
