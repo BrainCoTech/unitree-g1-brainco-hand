@@ -1,10 +1,10 @@
 
-# Introduction
+# 简介
 
-Extensions of [unitreerobotics/brainco_hand_service]((https://github.com/unitreerobotics/brainco_hand_service))
+本项目为 [unitreerobotics/brainco_hand_service]((https://github.com/unitreerobotics/brainco_hand_service))
 
-## Setup
-Clone or upload [unitree_sdk2](https://github.com/unitreerobotics/unitree_sdk2) and [brainco_hand_service](https://github.com/unitreerobotics/brainco_hand_service) to the robot development unit.
+## 环境准备
+将 [unitree_sdk2](https://github.com/unitreerobotics/unitree_sdk2) 和 [brainco_hand_service](https://github.com/unitreerobotics/brainco_hand_service) 克隆或上传到机器人开发单元.
 
 ```sh
 cd ~
@@ -12,46 +12,46 @@ git clone https://github.com/unitreerobotics/unitree_sdk2.git
 git clone https://github.com/unitreerobotics/brainco_hand_service.git
 ```
 
-Create new example
+创建新的示例
 ```sh
 cd ~/unitree_sdk2/example/g1
 mkdir brainco_hand & cd brainco_hand
 touch g1_arm7_brainco_example.cpp
 ```
 
-Copy and paste the content of `brainco_hand_service_extension/g1_arm7_brainco_example.cpp`
+复制并粘贴 `brainco_hand_service_extension/g1_arm7_brainco_example.cpp`
 
 
-Edit `CMakeLists.txt` 
+编辑 `CMakeLists.txt` 
 
-1. `unitree_sdk2/example/g1/CMakeLists.txt`
+1. 修改 `unitree_sdk2/example/g1/CMakeLists.txt`
 
     ```cmake
-    # Add at the very beginning
+    # 添加在最前面
     add_executable(g1_arm7_brainco_example brainco_hand/g1_arm7_brainco_example.cpp)
     target_link_libraries(g1_arm7_brainco_example unitree_sdk2)
     ```
 
-2.  Replace `unitree_sdk2/CMakeLists.txt` with `brainco_hand_service_extension/CMakeLists.txt`.
+2. 修改  `unitree_sdk2/CMakeLists.txt` 替换成 `brainco_hand_service_extension/CMakeLists.txt`.
 
-## Build
-Ensure the system time is correct.
+## 编译
+确保系统时间正确
 ```sh
-# show current time
+# 查看当前时间
 date
 ```
 
-If the system time has not been updated.
+如果系统时间未更新
 ```sh
-# remove the default route
+# 删除默认路由
 sudo ip route del default via 192.168.123.1 dev eth0
-# restart the system time sync
+# 重启系统时间同步服务
 sudo systemctl restart systemd-timesyncd
-# show current time
+# 查看当前时间
 date
 ```
 
-build `brainco_hand_service`
+编译 `brainco_hand_service`
 ```sh
 cd ~/brainco_hand_service
 mkdir build && cd build
@@ -59,7 +59,7 @@ cmake ..
 make -j6
 ```
 
-build `unitree_sdk2`
+编译 `unitree_sdk2`
 ```sh
 cd ~/unitree_sdk2
 mkdir build & cd build
@@ -67,17 +67,17 @@ cmake ..
 sudo make install
 ```
 
-## Run
+## 运行
 
-### Terminal 1 stay running
+### 终端 1 保持运行
 ```sh
 cd ~/brainco_hand_service/bin
-# start server (eth0 或 wlan0)
+# 启动服务器 (eth0 或 wlan0)
 sudo ./brainco_hand_server --network eth0
 ```
 
-### Terminal 2
-#### Hand test
+### 终端 2
+#### 手部测试
 ```sh
 cd ~/brainco_hand_service/bin
 # test left hand
@@ -86,9 +86,9 @@ sudo ./test_brainco_hand_server left
 sudo ./test_brainco_hand_server right
 ```
 
-#### Arm and hand test
+#### 臂手联合测试
 ```sh
 cd ~/unitree_sdk2/build/bin
-# test arm and hand (whether wired or wireless, eth0 must be used here.)
+# 测试机械臂与手部（无论有线或无线，此处必须使用 eth0）
 ./g1_arm7_brainco_sdk_dds_example eth0
 ```
