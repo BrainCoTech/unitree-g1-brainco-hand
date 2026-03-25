@@ -71,7 +71,7 @@ sudo make install
 
 ## Run
 
-### Terminal 1 stay running
+### Terminal 1 keep running
 ```sh
 cd ~/brainco_hand_service/bin
 # start server (eth0 or wlan0)
@@ -89,6 +89,9 @@ sudo ./test_brainco_hand_server right
 ```
 
 #### Arm and hand test
+
+Use the remote controller to make the robot enter **Locked Standing** mode.
+
 ```sh
 cd ~/unitree_sdk2/build/bin
 # test arm and hand (whether wired or wireless, eth0 must be used here.)

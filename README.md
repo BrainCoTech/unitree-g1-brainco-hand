@@ -89,6 +89,9 @@ sudo ./test_brainco_hand_server right
 ```
 
 #### 臂手联合测试
+
+用遥控器遥控机器人进入**锁定站立**模式
+
 ```sh
 cd ~/unitree_sdk2/build/bin
 # 测试机械臂与手部（无论有线或无线，此处必须使用 eth0）
