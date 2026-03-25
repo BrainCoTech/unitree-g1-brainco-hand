@@ -95,4 +95,5 @@ cd ~/unitree_sdk2/build/bin
 ./g1_arm7_brainco_example eth0
 ```
 Press ENTER to start arm and hand motion.
+
 Press R to Reset.

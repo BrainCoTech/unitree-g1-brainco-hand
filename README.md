@@ -95,4 +95,5 @@ cd ~/unitree_sdk2/build/bin
 ./g1_arm7_brainco_example eth0
 ```
 按下 ENTER 手臂和手开始运动
+
 按下 R 手臂和手复位
