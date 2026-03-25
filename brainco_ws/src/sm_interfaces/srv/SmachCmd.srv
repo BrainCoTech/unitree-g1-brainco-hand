@@ -1,6 +1,0 @@
-string data    # 事件名，比如 'activate'
-SmachParam param   # 事件参数
----
-bool success
-string message
-string current_state

@@ -1,1 +1,0 @@
-TouchStatusItem[5] data
