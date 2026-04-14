@@ -152,3 +152,48 @@ unitree@ubuntu:~$ ping 8.8.8.8
 unitree@ubuntu:~$ ping marketplace.visualstudio.com
 ```
 If successful, VS Code Remote SSH should now work properly.
+
+
+## 7. Revo2Touch hand: `get_touch_sensor_status: deprecated for current firmware`
+
+The `libbc_stark_sdk.so` currently shipped via `download-lib.sh` is version
+**0.4.3**, which hard-codes every touch-sensor API as "deprecated for current
+firmware" and returns empty regardless of the actual hardware:
+
+```
+WARN touch_sensor_setup: deprecated for current firmware
+WARN touch_sensor_calibrate: deprecated for current firmware
+WARN get_touch_sensor_status: deprecated for current firmware, return empty
+WARN stark_get_touch_sensor_raw_data: deprecated for current firmware, return empty
+```
+
+This happens even on **Revo2Touch** hardware where
+`modbus_get_device_info` reports `hardware_type = 4`
+(`STARK_HARDWARE_TYPE_REVO2_TOUCH`) and the physical touch sensors are
+installed and alive.
+
+There are two fixes:
+
+**Option A — upgrade the SDK (requires re-download).**
+Version **0.8.1** of the SDK (shipped with
+[`unitreerobotics/brainco_hand_service`](https://github.com/unitreerobotics/brainco_hand_service))
+adds `STARK_HARDWARE_TYPE_REVO2_TOUCH = 4` and accepts the touch-API
+calls.  Drop that `libbc_stark_sdk.so` into
+`ros2_stark_ws/src/ros2_stark_controller/lib/`, update `stark-sdk.h` to
+the matching version, and set `firmware_type: 4` in
+`config/params_v2_double.yaml`.
+
+**Option B — skip the SDK and talk raw Modbus.**
+A standalone workaround script that uses only `pyserial` and talks the
+same Modbus RTU commands the newer SDK sends internally:
+
+```sh
+pip install pyserial
+python3 ros2_stark_ws/src/ros2_stark_controller/scripts/touch_sensor_pyserial.py --dual
+```
+
+It enables the touch sensors, calibrates the idle baseline, and
+polls register `4200` at 10 Hz.  Pressing a fingertip shows the per-finger
+normal_force going from 0 to ~2500.  Works on any installed SDK version
+because it bypasses `libbc_stark_sdk.so` entirely.  See the top of that
+file for the register-layout documentation.
