@@ -39,8 +39,9 @@ Tutorial video (to be added)
 
 #### Robot Startup
 1. Power on Unitree G1 by refering to [Unitree Documentation Center|Operational Guidance](https://support.unitree.com/home/en/G1_developer/quick_start). When the robot powered, the hands' LED will light up and the fingers will reset automatically.
-2. Wait about 1 minute until G1 enters **Zero Torque Mode**, meaning joints can move freely without resistance.
-3. Use the remote controller and press the corresponding buttons to switch the robot sequentially into **Damping Mode** → **Ready Mode**. (Note: For arm development, do not enter **Motion Mode**.)
+2. Wait about 1 minute until G1 enters **Zero Torque Mode(L2 + Y)**, meaning joints can move freely without resistance.
+3. Use the remote controller and press the corresponding buttons to switch the robot sequentially into **Damping Mode(L2 + B)** → **Ready Mode(L2 + UP)**.
+4. If needed, enter **Main Opertain Control Mode(R1 + X)**. The upper-limb low-level control does not conflict with the walking/running high-level control.
 
 #### Remote Connection
 Based on [Unitree Documentation Center|Quick Start](https://support.unitree.com/home/en/G1_developer/quick_development):
