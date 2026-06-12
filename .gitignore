@@ -211,3 +211,8 @@ __marimo__/
 build/
 install/
 log/
+
+# other versions
+cam_calibr/
+eeg/
+ui_client/
