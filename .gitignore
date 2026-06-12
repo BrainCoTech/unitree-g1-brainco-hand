@@ -226,3 +226,7 @@ devel/
 *.png
 *.bmp
 *.tiff
+
+# tutorial
+!tutorials/images/
+!tutorials/images/*.jpg
