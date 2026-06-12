@@ -1,0 +1,49 @@
+host: 192.168.123.164 # 127.0.0.1 or 192.168.123.164
+port1: 43210
+port2: 46000
+
+state_graph:
+  initial_current_state: init_state
+  transitions:
+    init:
+      config: f
+    config:
+      active: a
+      shutdown: s
+    active:
+      config: d
+      shutdown: s
+    shutdown: {}
+  nodes:
+    init:
+      title: Init
+      subtitle: init_state
+      states:
+        - init_state
+      allowed_next:
+        - config
+      position: [0, 0]
+    config:
+      title: Ready
+      subtitle: config_state
+      states:
+        - config_state
+      allowed_next:
+        - active
+        - shutdown
+      position: [0, 1]
+    active:
+      title: Active
+      subtitle: any Action state
+      match: unmapped
+      allowed_next:
+        - config
+        - shutdown
+      position: [1, 1]
+    shutdown:
+      title: Shutdown
+      subtitle: finalized
+      states:
+        - finalized
+      allowed_next: []
+      position: [1, 0]
