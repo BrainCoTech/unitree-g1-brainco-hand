@@ -220,6 +220,10 @@ log/
 logs/
 devel/
 
+# model
+model/
+*.pt
+
 # img
 *.jpg
 *.jpeg
