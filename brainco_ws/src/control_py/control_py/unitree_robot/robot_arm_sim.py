@@ -13,7 +13,7 @@ H1_2_Num_Motors = 35
 H1_Num_Motors = 20
 
 from loguru import logger
-from teleop_py.utils.loguru_settings import setup_loguru
+from control_py.utils.loguru_settings import setup_loguru, logger_with_params
 setup_loguru(log_folder_path="log", show_on_terminal=True) # 设置日志 
 
 class MotorState:

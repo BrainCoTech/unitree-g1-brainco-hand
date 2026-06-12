@@ -158,7 +158,7 @@ class SimpleTasksHandler(BasicStatesHandler):
 
     def timer_showheart(self):
         self.time_ += self.control_dt_
-        self.teleop_showheart(0., 1, "both")
+        self.showheart(0., 1, "both")
         self.publish_all()
 
 

@@ -148,7 +148,7 @@ class SimpleTasks(BasicStates):
             
             
 
-    def teleop_showheart(self, start, end, armside):
+    def showheart(self, start, end, armside):
         target_q = [-0.66,   0.188,  0.038,  0.326,  0.45,  -1.43,   0.094,
                     -0.599, -0.186,  0.029,  0.098, -0.4 ,  -1.271, -0.062]
         hand_q = [0., 0.7, 0.6, 0.6, 0.6, 0.6] * 2
