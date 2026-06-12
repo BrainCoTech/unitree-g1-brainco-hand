@@ -5,18 +5,13 @@ import pinocchio as pin
 
 from pinocchio import casadi as cpin    
 from pinocchio.visualize import MeshcatVisualizer   
-import os
-import sys
 
 from scipy.spatial.transform import Rotation as R
 
-parent2_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-sys.path.append(parent2_dir)
-
-from arm_ik_control.weighted_moving_filter import WeightedMovingFilter
+from control_py.arm_ik_control.weighted_moving_filter import WeightedMovingFilter
         
 from loguru import logger
-from utils.loguru_settings import setup_loguru
+from control_py.utils.loguru_settings import setup_loguru
 setup_loguru(log_folder_path="log", show_on_terminal=True) # 设置日志
         
 class G1_23_ArmIK:
@@ -693,9 +688,6 @@ class G1_29_ArmIK:
             left_pose, right_pose: numpy 4x4矩阵，相对于头部坐标系
         """
 
-        pkgs_dir = os.getcwd() + '/src/control_py/control_py/'
-        sys.path.append(pkgs_dir)
-        from arm_ik_control.tv_wrapper import TeleVisionWrapper
 
         head_pos = [1., 0., 0., 0., 
                          0., 1., 0., 0., 

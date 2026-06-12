@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 import os
 from glob import glob
 
@@ -7,7 +7,10 @@ package_name = 'control_py'
 setup(
     name=package_name,
     version='0.0.0',
-    packages=[package_name],
+    packages=find_packages(exclude=['test']),
+    package_data={
+    },
+    include_package_data=True,
     data_files=[
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
@@ -27,8 +30,13 @@ setup(
     },
     entry_points={
         'console_scripts': [
+            # robot node
             "smach_main_node = control_py.smach_main_srv:main",
+            "high_cmd_node = control_py.high_cmd_serv:main",
+            # trans node
             "smach_trans_node = control_py.smach_trans_cli:main",
+            "smach_agent_node = control_py.smach_trans_agent:main",
+            "smach_whole_body_agent_node = control_py.smach_agent:main",
         ],
     },
 )

@@ -16,7 +16,7 @@ def generate_launch_description():
     hands_node = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([
             os.path.join(
-                get_package_share_directory('ros2_stark_controller'), 'launch', 'stark_launch.py'
+                get_package_share_directory('ros2_stark_controller_new'), 'launch', 'stark_launch.py'
             )
         ])
     )

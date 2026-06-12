@@ -1,0 +1,84 @@
+structure:
+  - init_state
+  - config_state
+  - active:
+      initial: "0"
+      children:
+        0: IDLE
+        1: Hello
+        2: Like
+        3: Rock-Paper-Scissors
+        4: Handshake
+        5: Show-Heart
+        10: ArmDown_inSeq
+  - finalized
+
+initial_state: init_state
+
+main_trans:
+  configure:
+    id: "f"
+    src: init_state
+    dst: config_state
+    after: "on_configure"
+
+  activate:
+    id: "a"
+    src: config_state
+    dst: active
+    before: "on_active"
+    after: "on_active_0"
+
+  deactivate:
+    id: "d"
+    src: active
+    dst: config_state
+    after: "on_configure"
+
+  shutdown:
+    id: "s"
+    src: "any"
+    dst: finalized
+    before: "on_shutdown"
+
+allowed_main_trans:
+  init_state: ["f", "s"]
+  config_state: ["a", "s"]
+  active: ["d", "s"]
+  shutdown: []
+
+allowed_sub_trans:
+  0: all_self
+
+handside_required_actions: [1, 2, 3, 4]
+
+behavior_trees:
+  active:
+    hello_sequence:
+      type: sequence
+      children: [1, 10]
+
+    like_sequence:
+      type: sequence
+      children: [2, 10]
+
+    rps_sequence:
+      type: sequence
+      children: [3, 10]
+
+    handshake_sequence:
+      type: sequence
+      children: [4, 10]
+
+    showheart_sequence:
+      type: sequence
+      children: [5, 10]
+
+active_expected_duration:
+  0: 0.0
+  1: 5.0
+  2: 2.0
+  3: 5.0
+  4: 7.0
+  5: 3.0
+  10: 3.0   # ArmDown_inSeq

@@ -1,0 +1,21 @@
+paths:
+  cam_calibr_dir: /home/unitree/g1-brainco/cam_calibr
+
+collection:
+  reset_pose:
+    left: [0.2, 0.38, 0.13, 0.0, 0.0, 0.8]
+    right: [0.2, -0.32, 0.13, 0.0, 0.0, -0.8]
+  init_pose:
+    left: [0.22, 0.14, 0.14, 0.0, 0.6, -0.4]
+    right: [0.22, -0.10, 0.14, 0.0, 0.6, 0.6]
+  move_range: [0.015, 0.015, 0.015, 0.15, 0.15, 0.15]
+
+task_pose:
+  pour_water:
+    left_cup_offset: [0.01, 0.06, 0.10, 0.0, -0.1, -0.5]
+    right_bottle_offset: [0.01, -0.06, 0.10, 0.0, -0.1, 0.5]
+    left_cup_offer_pose: [0.35, 0.15, 0.15, 0.0, -0.1, -0.3]
+    left_cup_offer_offset: [-0.05, 0.05, 0.0, 0.0, 0.0, 0.0]
+  grasp_apple:
+    left_orange_offset: [0.01, 0.05, 0.10, 1.1, -0.1, -0.5]
+    right_apple_offset: [0.01, -0.05, 0.10, -1.1, -0.1, 0.5]

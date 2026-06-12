@@ -13,12 +13,12 @@ def generate_launch_description():
 
 	return launch.LaunchDescription([
 		launch.actions.LogInfo(msg=f"{cyan} Start launching {reset}{bold} smach_main_node ...{reset}"),
-        launch.actions.LogInfo(msg=f"{cyan} Config File: {reset}{config}"),
+        # launch.actions.LogInfo(msg=f"{cyan} Config File: {reset}{config}"),
 		launch_ros.actions.Node(
 			package='control_py',
 			executable='smach_main_node',
 			name='smach_main_node',
-			parameters=[config],
+			# parameters=[config],
 			emulate_tty=True
 		),
 	])

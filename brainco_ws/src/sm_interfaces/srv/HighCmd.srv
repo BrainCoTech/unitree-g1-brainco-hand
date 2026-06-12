@@ -1,0 +1,6 @@
+string data         # 命令名
+HighCmdParam param  # 命令参数
+---
+bool success
+string message
+string current_state

@@ -1,14 +1,9 @@
-import sys
-import os
 import numpy as np
 
-pkgs_dir = os.getcwd() + '/src/control_py/control_py/'
-sys.path.append(pkgs_dir)
+from control_py.arm_ik_control.robot_arm_ik_side import G1_23_ArmIK, G1_29_ArmIK
+from control_py.arm_ik_control.tv_wrapper import TeleVisionWrapper
 
-from arm_ik_control.robot_arm_ik_side import G1_23_ArmIK, G1_29_ArmIK
-from arm_ik_control.tv_wrapper import TeleVisionWrapper
-
-from arm_ik_control.arm_joints import G1JointIndex
+from control_py.arm_ik_control.arm_joints import G1JointIndex
 
 
 class ArmIK:
@@ -247,8 +242,8 @@ class Arm:
                                     'wrist_roll_joint']
             
         else:
-            self.kp = [100., 100., 100., 100., 100., 100., 100., 
-                       100., 100., 100., 100., 100., 100., 100.]
+            self.kp = [80., 80., 80., 80., 80., 80., 80., 
+                       80., 80., 80., 80., 80., 80., 80.]
             self.kd = 1.5
             self.dq = 0.
             self.tau_ff = [-1.5, 0.5, 0.7, -1.2, 0., -1.5, -0.5, 
@@ -317,6 +312,23 @@ class Hand:
                             'middle', 
                             'ring', 
                             'pinky']
+        
+        self.left_hand_joints = [
+            "left_thumb_proximal_joint",
+            "left_thumb_metacarpal_joint",
+            "left_index_proximal_joint",
+            "left_middle_proximal_joint",
+            "left_ring_proximal_joint",
+            "left_pinky_proximal_joint",
+        ]
+        self.right_hand_joints = [
+            "right_thumb_proximal_joint",
+            "right_thumb_metacarpal_joint",
+            "right_index_proximal_joint",
+            "right_middle_proximal_joint",
+            "right_ring_proximal_joint",
+            "right_pinky_proximal_joint",
+        ]
         
         self.print_hand()
         

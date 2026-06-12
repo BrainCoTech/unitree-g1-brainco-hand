@@ -1,0 +1,63 @@
+structure:
+  - init_state
+  - config_state
+  - active:
+      initial: "0"
+      children:
+        0: IDLE
+        1: Ready
+        2: Calibr-Test
+        3: Calibr-Left-Start
+        4: Calibr-Right-Start
+  - finalized
+
+initial_state: init_state
+
+
+main_trans:
+  configure:
+    id: "f"
+    src: init_state
+    dst: config_state
+    after: "on_configure"
+
+  activate:
+    id: "a"
+    src: config_state
+    dst: active
+    after: "on_active_0"
+
+  deactivate:
+    id: "d"
+    src: active
+    dst: config_state
+    after: "on_configure"
+
+  shutdown:
+    id: "s"
+    src: "any"
+    dst: finalized
+    before: "on_shutdown"
+
+
+allowed_main_trans:
+  init_state: ["f", "s"]
+  config_state: ["a", "s"]
+  active: ["d", "s"]
+  shutdown: []
+
+allowed_sub_trans:
+  0: all_self
+  1: all
+  2: all
+  3: all
+  4: all
+
+handside_required_actions: []
+
+active_expected_duration:
+  0: 0.0
+  1: auto
+  2: auto
+  3: auto
+  4: auto

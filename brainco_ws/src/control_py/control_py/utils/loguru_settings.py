@@ -6,6 +6,11 @@ from loguru import logger
 
 __all__ = ["setup_loguru"]
 
+# ANSI 转义序列
+BOLD = "\033[1m"
+NORMAL = "\033[22m"
+
+
 
 # 添加 InterceptHandler() 类  兼容logging
 class __InterceptHandler(logging.Handler):
@@ -25,7 +30,13 @@ class __InterceptHandler(logging.Handler):
         logger.opt(depth=depth, exception=record.exc_info).log(level, record.getMessage())
 
 
-def setup_loguru(log_folder_path, is_developer_mode=False, is_compatible_logging=False, show_on_terminal=False):
+def setup_loguru(log_folder_path, 
+                 is_developer_mode=False, 
+                 is_compatible_logging=False, 
+                 show_on_terminal=False,
+                 log_level="DEBUG",
+                 terminal_level="INFO",
+                 bold_text=True):
     """
     日志配置初始化
     Args:
@@ -37,6 +48,13 @@ def setup_loguru(log_folder_path, is_developer_mode=False, is_compatible_logging
     Returns:
 
     """
+    if not bold_text:
+        logger.level("DEBUG", color="<blue>")
+        logger.level("INFO", color="<fg #000000>")
+        logger.level("WARNING", color="<yellow>")
+        logger.level("ERROR", color="<red>")
+        logger.level("CRITICAL", color="<red>")
+
     if is_compatible_logging:
         logging.basicConfig(handlers=[__InterceptHandler()], level=0)  # 兼容logging 重新向logging的输出到loguru
     logger.remove()  # 移除已添加的 handler 防止重复记录
@@ -46,18 +64,18 @@ def setup_loguru(log_folder_path, is_developer_mode=False, is_compatible_logging
     os.makedirs(log_path, exist_ok=True)
 
     retention = "15 days"  # 保存15天内的日志文件
-    level = "INFO"  # 存储日志的最低级别
+    level = log_level  # 存储日志的最低级别
     rotation = "100 MB"  # 日志文件存储大小 超过此大小会自动切分文件
     compression = "zip"  # 日志压缩格式
     encoding = "UTF-8"
-    format_st = "{time:YYYY-MM-DD HH:mm:ss.SSS} | {level}   | {file}:{line} - {message}"  # 日志文本记录格式
+    format_st = "{time:YYYY-MM-DD HH:mm:ss.SSS} | {level} | {file}:{line} - {message}"  # 日志文本记录格式
     enqueue = False  # loguru默认是多线程安全的, 如果需要多进程安全请将此参数置为True
 
     backtrace = is_developer_mode
     diagnose = is_developer_mode
 
     if show_on_terminal:
-        logger.configure(handlers=[{"sink": sys.stderr, "level": 'INFO'}])   # 添加输出到终端的handler
+        logger.configure(handlers=[{"sink": sys.stderr, "level": terminal_level}])   # 添加输出到终端的handler
 
     # 添加handler
 
@@ -113,26 +131,16 @@ def setup_loguru(log_folder_path, is_developer_mode=False, is_compatible_logging
                filter=lambda x: 'DEBUG' in str(x['level']).upper())
     
 
-# def log_info(msg, bold=False, end=1):
-#     """
-#     打印 INFO 日志，简洁显示，可选择是否加粗或取消换行
-#     """
 
-#     if bold:
-#         msg = f"\033[1m{msg}\033[0m"  # 加粗
-#     else:
-#         msg = f"\033[22m{msg}\033[0m"  # 取消加粗（显式设置为正常粗细）
-
-#     # 临时添加一个只输出 message 的 handler
-#     # logger.remove()  # 移除默认的 handler
-
-#     i = logger.add(sys.stderr, format="{message}", level="INFO", colorize=True)
-#     logger.info(msg)
-#     if end != 1:
-#         sys.stdout.write(msg)   # 不会换行
-#         sys.stdout.flush()      # 刷新缓冲区
-#     logger.remove(i)
-
-
-
-
+def logger_with_params(msg_template, *args, level="INFO"):
+    """
+    打印日志，所有传入的参数加粗，其余文字细体
+    """
+     # 模板文字先强制细体
+    msg_template = f"{NORMAL}{msg_template}"
+    # 将所有参数包装成粗体
+    bold_args = [f"{BOLD}{arg}{NORMAL}" for arg in args]
+    # 格式化字符串
+    message = msg_template.format(*bold_args)
+    # 调用 loguru 对应等级打印
+    getattr(logger, level.lower())(message)

@@ -1,6 +1,6 @@
 import numpy as np
-from arm_ik_control.constants import *
-from arm_ik_control.mat_tool import mat_update, fast_mat_inv
+from control_py.arm_ik_control.constants import *
+from control_py.arm_ik_control.mat_tool import mat_update, fast_mat_inv
 
 
 """

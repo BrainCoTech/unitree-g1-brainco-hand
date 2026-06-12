@@ -1,7 +1,11 @@
-# ros2 humble
+# ros2 humble stark controller
+
+## RS-485 或 CAN 版本
+
+### 下载依赖
 
 ```shell
-# First download libs
+# First download libs, in project root directory
 rm VERSION
 ./download-lib.sh
 
@@ -13,51 +17,100 @@ ros2_stark_ws/src/ros2_stark_controller/include
 └── ros2_stark_controller
     ├── stark-sdk.h
     └── stark_node.hpp
+```
 
-# Replace ".bash" with your shell if you're not using bash
-# Possible values are: setup.bash, setup.sh, setup.zsh
-source /opt/ros/humble/setup.bash
-# source /opt/ros/humble/setup.zsh
+### 启动控制器节点
+
+```shell
+cd ros2_stark_ws
+chmod +x stark_serial_manager.sh # 给脚本执行权限
+./stark_serial_manager.sh launch # 启动控制器节点
+# ./stark_serial_manager.sh launch build # 如果需要编译
+# ./stark_serial_manager.sh launch build clean # 如果需要编译并清理
+```
+
+### 重启开启另一个终端
+
+```shell
+cd ros2_stark_ws
+./stark_serial_manager.sh # 测试发送位置控制命令
+./stark_serial_manager.sh monitor  # 监控电机状态
+./stark_serial_manager.sh monitor_touch  # 监控触觉状态
+ros2 topic list # 查看话题列表
+ros2 service list # 查看服务列表
+ros2 param list # 查看参数列表
+ros2 param get /stark_node port # 查看串口参数
+ros2 topic info /set_motor_single_1 # 查看单个手指控制话题信息
+# 发送单个手指位置控制命令
+ros2 topic pub --once /set_motor_single_1 ros2_stark_msgs/msg/SetMotorSingle "{
+  slave_id: 1,
+  mode: 1,
+  motor_id: 5,
+  position: 100,
+  speed: 0,
+  current: 0,
+  pwm: 0,
+  duration: 0
+}"
+```
+
+## ROS2 EtherCAT 版本
+
+### 启动控制器节点 - EtherCAT 版本
+
+```shell
+ip link show # 检查网络接口
+ethercat version # 检查 EtherCAT 版本
+sudo systemctl enable ethercat # 启用 EtherCAT 主站
+sudo systemctl restart ethercat # 重启 EtherCAT 主站
+sudo systemctl status ethercat # 检查 EtherCAT 主站是否运行
+
+journalctl -u ethercat.service -b # 查看 EtherCAT 运行日志
+# 查看内核日志，排查 驱动层 / 网卡绑定 是否正常
+dmesg | grep EtherCAT
+dmesg | grep ec_
+
+sudo ethercat slaves  # 检查是否有 EtherCAT 设备连接
+sudo ethercat sdos # 检查 EtherCAT 设备的 SDO 信息
+sudo ethercat pdos # 检查 EtherCAT 设备的 PDO 信息
+
+# 读取固件版本
+ethercat upload -t string -p 0 0x8000 0x11 # FW version
+ethercat upload -t string -p 0 0x8000 0x12 # SN
+ethercat upload -t string -p 0 0x8000 0x13 # Wrist FW version
+ethercat upload -t string -p 0 0x8000 0x14 # Wrist SN
+
+ethercat upload -t uint8 -p 0 0x8010 0x06 # Touch Sensor Vendor ID
+ethercat upload -t string -p 0 0x8010 0x0D # Thumb Touch Sensor FW
+ethercat upload -t string -p 0 0x8010 0x0E # Index Touch Sensor FW
+ethercat upload -t string -p 0 0x8010 0x0F # Middle Touch Sensor FW
+ethercat upload -t string -p 0 0x8010 0x10 # Ring Touch Sensor FW
+ethercat upload -t string -p 0 0x8010 0x11 # Pinky Touch Sensor FW 
+
+# 在OP模式下，读取关节信息
+# echo "=== 读取所有关节数据 ==="
+# echo "位置数据 (6x UINT16):"
+ethercat upload -t raw -p 0 0x6000 0x01
+ethercat upload -t raw -p 0 0x6000 0x01 | xxd -r -p | od -An -t u2 --endian=little -w2 | awk '{printf "关节位置%d: %d\n", NR, $1}'
+
+# 在OP模式下，读取触觉信息
+ethercat upload -t raw -p 0 0x6010 0x01
+ethercat upload -t raw -p 0 0x6010 0x01 | xxd -r -p | od -An -t u2 --endian=little -w2 | awk '{printf "法向力%d: %d\n", NR, $1}'
 
 cd ros2_stark_ws
-rm -rf build install log
+chmod +x stark_ethercat_manager.sh # 给脚本执行权限
+./stark_ethercat_manager.sh launch # 启动控制器节点
+#./stark_ethercat_manager.sh launch build # 如果需要编译
+#./stark_ethercat_manager.sh launch build clean # 如果需要编译并清理
+```
 
-# 编译
-colcon build --symlink-install
-# colcon build --packages-select ros2_stark_interfaces 
-# colcon build --packages-select ros2_stark_controller
+### 重启开启另一个终端 - EtherCAT 版本
 
-# 设置本地环境
-source install/setup.bash
-# source install/setup.zsh
-
-# FIXME: 需要设置动态链接库路径
-# export LD_LIBRARY_PATH=/home/hailong/projects/stark-serialport-example/ros2_stark_ws/install/ros2_stark_controller/lib/ros2_stark_controller:$LD_LIBRARY_PATH
-
-# 使用 launch 文件运行Stak节点
-ros2 launch ros2_stark_controller stark_launch.py 
-
-# 测试位置控制
-ros2 run ros2_stark_controller stark_position_control.py --positions 0.5 0.5 0.5 0.5 0.5 0.5
-ros2 run ros2_stark_controller stark_position_control.py --positions 0.0 1.0 0.0 1.0 0.0 1.0 --rate 10
-
-# services
-ros2 interface show ros2_stark_interfaces/srv/SetMotorPositions
-
-# 检查节点
-ros2 node list
-# 查看话题
-ros2 topic list
-
-# 
-# ros2 topic echo /joint_states
-ros2 topic echo /motor_status
-ros2 topic echo /touch_status
-
-# 查看参数
-ros2 param list /stark_node
-# 动态修改参数
-ros2 param set /stark_node baudrate 115200
-ros2 param set /stark_node baudrate 57600
-
+```shell
+cd ros2_stark_ws
+./stark_ethercat_manager.sh # 测试发送位置控制命令
+./stark_ethercat_manager.sh monitor  # 监控左电机状态
+./stark_ethercat_manager.sh monitor_right  # 监控右电机状态
+./stark_ethercat_manager.sh touch   # 监控左触觉状态
+./stark_ethercat_manager.sh touch_right  # 监控右触觉状态
 ```

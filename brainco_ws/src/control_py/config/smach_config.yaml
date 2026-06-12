@@ -1,8 +1,41 @@
-smach_main_node:
-  ros__parameters:
-    robot_dof: 29 # G1 Dof (only support 23 and 29)
-    log_time_screen: False
-    log_armstate_screen: False
-    log_armcmd_screen: False
-    log_wristpose_screen: False
-    log_hand_screen: False
+logs:
+  log_time_screen: False
+  log_armstate_screen: False
+  log_armcmd_screen: False
+  log_wristpose_screen: False
+  log_hand_screen: False
+  sim_wave_motion: False
+
+mode:
+
+  current_mode: simple
+  switch_after_done: True
+  trigger_test: False
+
+  mode_modules:
+    simple:   control_py.state_manager.simple         # 包含5种简单动作
+    calibr:   control_py.state_manager.calibrate      # 手眼标定
+
+  states_config:
+    SmFolder:   src/control_py/control_py/state_manager/
+
+    simple:   simple/simple_states_config.yaml
+    calibr:   calibrate/calibr_states_config.yaml
+  
+
+robot:
+
+  robot_dof: 29
+  safe_height_threshold: 0.07 # 单位:米，相对于机器人腰部零位高度
+
+  cameras:
+    width: 640
+    height: 480
+    fps: 30
+
+    cam_head:   /dev/video4
+
+teleop:
+  enable: False
+  arm_state_bridge: False
+  sim_wave_motion: False
