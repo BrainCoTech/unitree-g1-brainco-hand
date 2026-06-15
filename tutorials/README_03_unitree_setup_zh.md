@@ -32,6 +32,15 @@ chmod +x ./launch/launch_trans.sh
 chmod +x ./launch/launch_robot.sh
 ```
 
+安装 BrainCo SDK 库文件
+```sh
+cd ~/unitree-g1-brainco-hand/ros2_stark_ws
+chmod +x download-lib.sh
+./download-lib.sh
+mkdir src/ros2_stark_controller_new/lib
+mv dist/shared/linux/libbc_stark_sdk.so src/ros2_stark_controller_new/lib/libbc_stark_sdk.so
+```
+
 ## Setup Hand Control Parameters
 修改 `ros2_stark_ws/src/ros2_stark_controller_new/config/` 目录下的 `params_revo2_left.yaml` 和
 `params_revo2_right.yaml`
@@ -41,22 +50,12 @@ chmod +x ./launch/launch_robot.sh
 
 ## Build the Workspaces
 
-1. 编译 brainco_ws
 ```sh
 conda activate g1brainco
+# 编译 brainco_ws
 cd ~/unitree-g1-brainco-hand/brainco_ws 
-# 编译 ROS2 包
-python -m colcon build    
-        
-```
-2. 编译 ros2_stark_ws
-```sh
+python -m colcon build   
+# 编译 ros2_stark_ws
 cd ~/unitree-g1-brainco-hand/ros2_stark_ws
-# 下载并安装 BrainCo SDK 库文件
-chmod +x download-lib.sh
-./download-lib.sh
-mkdir src/ros2_stark_controller_new/lib
-mv dist/shared/linux/libbc_stark_sdk.so src/ros2_stark_controller_new/lib/libbc_stark_sdk.so
-# 编译 ROS2 包
-python -m colcon build  
+python -m colcon build   
 ```

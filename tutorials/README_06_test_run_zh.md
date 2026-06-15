@@ -50,7 +50,7 @@ conda activate g1brainco
 ./launch/launch_trans.sh agent
 ```
 
-### 4. 控制端 PC: 打开控制 GUI
+### 4. 客户端 PC: 打开控制 GUI
 ```sh
 # 进入 client 目录
 cd ui_client 
