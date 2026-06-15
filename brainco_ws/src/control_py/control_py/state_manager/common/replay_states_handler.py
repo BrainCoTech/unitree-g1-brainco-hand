@@ -15,7 +15,7 @@ from control_py.state_manager.common.lerobot_dataset import (
 class ReplayStatesHandler:
     # 读取回放数据集配置，确定回放文件和 episode。
     def _replay_config(self, dataset_idx: int):
-        config_file = "src/control_py/control_py/state_manager/teleop/datasets_config.yaml"
+        config_file = "src/control_py/control_py/state_manager/eeg/datasets_config.yaml"
         with open(config_file, "r") as f:
             datasets_cfg = yaml.safe_load(f)
 

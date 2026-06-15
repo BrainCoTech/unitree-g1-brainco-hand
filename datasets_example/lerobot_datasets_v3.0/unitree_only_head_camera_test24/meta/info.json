@@ -1,0 +1,148 @@
+{
+    "codebase_version": "v3.0",
+    "robot_type": "unitree_only_head_camera",
+    "total_episodes": 1,
+    "total_frames": 553,
+    "total_tasks": 1,
+    "chunks_size": 1000,
+    "fps": 30,
+    "splits": {
+        "train": "0:1"
+    },
+    "data_path": "data/chunk-{chunk_index:03d}/file-{file_index:03d}.parquet",
+    "video_path": "videos/{video_key}/chunk-{chunk_index:03d}/file-{file_index:03d}.mp4",
+    "features": {
+        "timestamp": {
+            "dtype": "float32",
+            "shape": [
+                1
+            ],
+            "names": null,
+            "fps": 30
+        },
+        "frame_index": {
+            "dtype": "int64",
+            "shape": [
+                1
+            ],
+            "names": null,
+            "fps": 30
+        },
+        "episode_index": {
+            "dtype": "int64",
+            "shape": [
+                1
+            ],
+            "names": null,
+            "fps": 30
+        },
+        "index": {
+            "dtype": "int64",
+            "shape": [
+                1
+            ],
+            "names": null,
+            "fps": 30
+        },
+        "task_index": {
+            "dtype": "int64",
+            "shape": [
+                1
+            ],
+            "names": null,
+            "fps": 30
+        },
+        "observation.images.cam_head": {
+            "dtype": "video",
+            "names": [
+                "height",
+                "width",
+                "channels"
+            ],
+            "shape": [
+                480,
+                640,
+                3
+            ],
+            "info": {
+                "video.height": 480,
+                "video.width": 640,
+                "video.channels": 3,
+                "video.codec": "libx264",
+                "video.pix_fmt": "yuv420p"
+            }
+        },
+        "observation.state": {
+            "dtype": "float32",
+            "names": [
+                "unitree_left_joint1",
+                "unitree_left_joint2",
+                "unitree_left_joint3",
+                "unitree_left_joint4",
+                "unitree_left_joint5",
+                "unitree_left_joint6",
+                "unitree_left_joint7",
+                "unitree_right_joint1",
+                "unitree_right_joint2",
+                "unitree_right_joint3",
+                "unitree_right_joint4",
+                "unitree_right_joint5",
+                "unitree_right_joint6",
+                "unitree_right_joint7",
+                "left_thumb_proximal_joint",
+                "left_thumb_metacarpal_joint",
+                "left_index_proximal_joint",
+                "left_middle_proximal_joint",
+                "left_ring_proximal_joint",
+                "left_pinky_proximal_joint",
+                "right_thumb_proximal_joint",
+                "right_thumb_metacarpal_joint",
+                "right_index_proximal_joint",
+                "right_middle_proximal_joint",
+                "right_ring_proximal_joint",
+                "right_pinky_proximal_joint"
+            ],
+            "shape": [
+                26
+            ],
+            "fps": 30
+        },
+        "action": {
+            "dtype": "float32",
+            "names": [
+                "unitree_left_joint1",
+                "unitree_left_joint2",
+                "unitree_left_joint3",
+                "unitree_left_joint4",
+                "unitree_left_joint5",
+                "unitree_left_joint6",
+                "unitree_left_joint7",
+                "unitree_right_joint1",
+                "unitree_right_joint2",
+                "unitree_right_joint3",
+                "unitree_right_joint4",
+                "unitree_right_joint5",
+                "unitree_right_joint6",
+                "unitree_right_joint7",
+                "left_thumb_proximal_joint",
+                "left_thumb_metacarpal_joint",
+                "left_index_proximal_joint",
+                "left_middle_proximal_joint",
+                "left_ring_proximal_joint",
+                "left_pinky_proximal_joint",
+                "right_thumb_proximal_joint",
+                "right_thumb_metacarpal_joint",
+                "right_index_proximal_joint",
+                "right_middle_proximal_joint",
+                "right_ring_proximal_joint",
+                "right_pinky_proximal_joint"
+            ],
+            "shape": [
+                26
+            ],
+            "fps": 30
+        }
+    },
+    "data_files_size_in_mb": 100,
+    "video_files_size_in_mb": 500
+}
