@@ -15,12 +15,14 @@ mode:
   mode_modules:
     simple:   control_py.state_manager.simple         # 包含5种简单动作
     calibr:   control_py.state_manager.calibrate      # 手眼标定
+    # eeg:      control_py.state_manager.eeg
 
   states_config:
     SmFolder:   src/control_py/control_py/state_manager/
 
     simple:   simple/simple_states_config.yaml
     calibr:   calibrate/calibr_states_config.yaml
+    # eeg:      eeg/eeg_states_config.yaml
   
 
 robot:
