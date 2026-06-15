@@ -1,4 +1,4 @@
-## 测试运行
+## 示例1：简单动作
 
 ### 1. 机器人配置
 修改通用配置 `brainco_ws/src/control_py/config/smach_config.yaml`
@@ -32,10 +32,6 @@ conda activate g1brainco
 ```
 
 检查输出信息:
-- 左右手 `Port`，`Baudrate`，`slave_id` 都正确
-- 串口已打开 `"serial port opened"`
-- 正在等待关节控制命令 `"Waiting for joint cmd ..."`
-如果未出现上述信息，可能是config文件参数不正确
 - IK初始化结束 `"IK initialization done."`
 - 当显示 `"Request 'configure' to start"` 则可以发送状态转换请求
 
@@ -50,7 +46,7 @@ conda activate g1brainco
 ./launch/launch_trans.sh agent
 ```
 
-### 4. 客户端 PC: 打开控制 GUI
+### 4. 控制端 PC: 打开控制 GUI
 ```sh
 # 进入 client 目录
 cd ui_client 
@@ -59,3 +55,38 @@ conda activate braincogui
 # 启动 GUI
 python ui_client/ui_client.py
 ```
+
+<p align="center">
+  <img src="images/tutorial_example1.png" width="600">
+</p>
+
+执行动作
+
+```
+Init -> Ready -> Active -> (e.g.)a1_Hello -> 手臂放下3s后可执行下个动作
+```
+
+结束动作
+```
+(e.g.)a1_Hello -> Ready/Ready(Table Safe) 会打断正在执行的动作
+```
+
+
+| UI config | description           | default           |
+| --------- | --------------------- | ----------------- |
+| 左上角IP     | 同网络下的机器人IP            | `192.168.123.164` |
+| Port1     | 内部状态机命令，不可被发现         | `43210`           |
+| Port2     | Action切换命令，可以通过广播自动发现 | `46000`           |
+
+| State              |          |                  |
+| ------------------ | -------- | ---------------- |
+| Init               | 初始状态     |                  |
+| Ready              | 机器人准备/回零 | 手臂从当前位置径直恢复原位    |
+| Ready (Table Safe) | 机器人准备/回零 | 手臂绕过桌子恢复原位       |
+| Shutdown           | 机器人急停    | 重启需在机器人端重启两个终端命令 |
+
+**注意：**
+- 激活命令显示黄色，可达命令显示白色
+- 左侧状态机不影响下肢 HighCmd
+- `Active` 期间，正在执行的动作在一定时间(可配置)内不会被其他 `Action` 打断，但可通过 `Ready` 回零，或通过`Shutdown` 急停
+

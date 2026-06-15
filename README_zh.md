@@ -49,13 +49,15 @@
 
 [04 (可选) Vision 配置](./tutorials/README_04_other_config.md)
 
-### 以下需部署到客户端 PC
+### 以下需部署到控制端 PC
 
 [05 Host PC Setup](./tutorials/README_05_control_setup_zh.md)  
 
 ## 测试运行
 
-[06 Test Run](./tutorials/README_06_test_run_zh.md)
+[06 Test Run 示例1 简单动作](./tutorials/README_06_test_run_zh.md) 
+
+[07 Test Run 示例2 手眼标定](./tutorials/README_07_test_run_calibrate_zh.md)
 
 ## FAQ
 [FAQ 中文](./tutorials/FAQ_zh.md) or [FAQ English version](./tutorials/FAQ_en.md)

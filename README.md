@@ -45,13 +45,15 @@ Update 2026.6.8:
 
 [04 (Optional) Vision Setup](./tutorials/README_04_other_config.md)
 
-### The following should be deployed on the client PC
+### The following should be deployed on the host PC
 
 [05 Host PC Setup](./tutorials/README_05_control_setup.md)
 
 ## Test Run
 
-[06 Test Run](./tutorials/README_06_test_run_en.md)
+[06 Example 1: Simple Motions](./tutorials/README_06_test_run_en.md)
+
+[07 Example 2: Hand-Eye Calibration](./tutorials/README_07_test_run_calibrate_zh.md)
 
 ## FAQ
 [FAQ English Version](./tutorials/FAQ_en.md) or [FAQ 中文](./tutorials/FAQ_zh.md)
