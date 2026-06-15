@@ -188,15 +188,15 @@ class RobotControl:
         self.L_tf_target = pose_quat_to_se3(self.init_arm_pose_left_quat)
         self.R_tf_target = pose_quat_to_se3(self.init_arm_pose_right_quat)
 
-        # 测试谐波运动
-        if self.sim_wave_motion:
-            self.rotation_speed = 0.005  # Rotation speed in radians per iteration
-            self.step = 0
+        # # 测试谐波运动
+        # if self.sim_wave_motion:
+        #     self.rotation_speed = 0.005  # Rotation speed in radians per iteration
+        #     self.step = 0
         self.arm_new.speed_gradual_max()
 
 
         # Teleop New
-        self.teleop_initialization()
+        # self.teleop_initialization()
 
         self.get_logger().info("New IK initialization done.\n")
 
@@ -238,21 +238,21 @@ class RobotControl:
         self.calib_pos_right: Optional[np.ndarray] = None
         self.calib_rot_right: Optional[np.ndarray] = None
 
-        # 遥操 target 位置
-        self.target_left = self.init_arm_pose_left_quat.copy()
-        self.target_right = self.init_arm_pose_right_quat.copy()
+        # # 遥操 target 位置
+        # self.target_left = self.init_arm_pose_left_quat.copy()
+        # self.target_right = self.init_arm_pose_right_quat.copy()
 
-        # 读取 Config 文件
-        tracker_config_file = 'src/control_py/control_py/state_manager/teleop/teleop_tracker_config.yaml'
-        cfg = yaml.safe_load(open(tracker_config_file))
-        key = cfg["adapt_selected"]
-        item = cfg["adapt_group"][key]
+        # # 读取 Config 文件
+        # tracker_config_file = 'src/control_py/control_py/state_manager/teleop/teleop_tracker_config.yaml'
+        # cfg = yaml.safe_load(open(tracker_config_file))
+        # key = cfg["adapt_selected"]
+        # item = cfg["adapt_group"][key]
         
-        self.coord, self.R_index_left, self.R_index_right = item["coord"], item["left"], item["right"]
+        # self.coord, self.R_index_left, self.R_index_right = item["coord"], item["left"], item["right"]
 
 
-        self.R_axes_left = [get_rot_mat(idx) for idx in self.R_index_left]
-        self.R_axes_right = [get_rot_mat(idx) for idx in self.R_index_right]
+        # self.R_axes_left = [get_rot_mat(idx) for idx in self.R_index_left]
+        # self.R_axes_right = [get_rot_mat(idx) for idx in self.R_index_right]
 
 
     def solve_ee_ik(self, ee_left, ee_right, quat_order="wxyz", euler_order="xyz"):
