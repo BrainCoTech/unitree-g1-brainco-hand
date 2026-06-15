@@ -41,13 +41,22 @@ chmod +x ./launch/launch_robot.sh
 
 ## Build the Workspaces
 
+1. 编译 brainco_ws
 ```sh
-# 激活 conda 环境
 conda activate g1brainco
-# 编译 brainco_ws
 cd ~/unitree-g1-brainco-hand/brainco_ws 
+# 编译 ROS2 包
 python -m colcon build    
-# 编译 ros2_stark_ws
+        
+```
+2. 编译 ros2_stark_ws
+```sh
 cd ~/unitree-g1-brainco-hand/ros2_stark_ws
-python -m colcon build          
+# 下载并安装 BrainCo SDK 库文件
+chmod +x download-lib.sh
+./download-lib.sh
+mkdir src/ros2_stark_controller_new/lib
+mv dist/shared/linux/libbc_stark_sdk.so src/ros2_stark_controller_new/lib/libbc_stark_sdk.so
+# 编译 ROS2 包
+python -m colcon build  
 ```
