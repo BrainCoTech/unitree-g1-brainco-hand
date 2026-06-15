@@ -1,5 +1,5 @@
 paths:
-  cam_calibr_dir: /home/unitree/g1-brainco/cam_calibr
+  cam_calibr_dir: /home/unitree/unitree-g1-brainco-hand/cam_calibr
 
 collection:
   reset_pose:

@@ -105,7 +105,7 @@ class CalibrTasks(BasicStates):
             self.waist_joint_fix(waist_q=0.)
             logger.info(f"Taking image...")
             img_id = {"left": 1, "right": 2}.get(armside, 0)
-            output_dir = "/home/unitree/g1-brainco/scripts/_test_cams"
+            output_dir = "/home/unitree/unitree-g1-brainco-hand/scripts/_test_cams"
             
             filename = f"calibr_test_{img_id}.jpg"
             self.image_captured = self.capture_image(output_dir, filename)

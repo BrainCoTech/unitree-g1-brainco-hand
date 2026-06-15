@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # 先加载 ROS2 环境
-source ~/g1-brainco/brainco_ws/install/setup.bash
+source ~/unitree-g1-brainco-hand/brainco_ws/install/setup.bash
 
 # 判断传入的参数
 if [ "$1" == "agent" ]; then

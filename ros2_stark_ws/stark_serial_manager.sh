@@ -46,7 +46,7 @@ if [ "$1" == "launch" ]; then
     # ros2 run ros2_stark_controller stark_node --ros-args --params-file ~/projects/stark-serialport-example/ros2_stark_ws/src/ros2_stark_controller/config/params_revo1.yaml 
     # ros2 run ros2_stark_controller stark_node --ros-args --params-file ~/projects/stark-serialport-example/ros2_stark_ws/src/ros2_stark_controller/config/params_revo1_touch.yaml
     # ros2 run ros2_stark_controller stark_node --ros-args --params-file ~/projects/stark-serialport-example/ros2_stark_ws/src/ros2_stark_controller/config/params_revo1_can.yaml
-    ros2 run ros2_stark_controller stark_node --ros-args --params-file ~/g1-brainco/ros2_stark_ws/src/ros2_stark_controller/config/params_revo2.yaml
+    ros2 run ros2_stark_controller stark_node --ros-args --params-file ~/unitree-g1-brainco-hand/ros2_stark_ws/src/ros2_stark_controller/config/params_revo2.yaml
     # ros2 run ros2_stark_controller stark_node --ros-args --params-file ~/projects/stark-serialport-example/ros2_stark_ws/src/ros2_stark_controller/config/params_revo2_canfd.yaml
 
 elif [ "$1" == "monitor" ]; then
