@@ -37,8 +37,15 @@ conda activate g1brainco
 ```
 
 Check the output:
-- IK initialization is complete: `"IK initialization done."`
-- When `"Request 'configure' to start"` is displayed, you can send state transition requests.
+
+| node | info |  |
+| ---- | ---- | ---- |
+| `stark_node` | `slave[126] get_device_info... DeviceInfo: ...`<br>`slave[127] get_device_info... DeviceInfo: ...` | Both hands are communicating normally |
+| `high_cmd_node` | `G1 HighCmd service ready` | The lower-limb control bridge is ready |
+| `smach_main_node` | `Importing ultralytics YOLO. Please wait...` | Wait for YOLO model loading to complete, if enabled |
+| `smach_main_node` | `Mode: eeg` Confirm it is correct | The selected control mode |
+| `smach_main_node` | `IK initialization done.` | IK loaded |
+| `smach_main_node` | `Request 'configure' to start` | Waiting for Agent control commands |
 
 ### 3. Unitree Terminal 2: Start the Agent Network Service
 
@@ -50,6 +57,16 @@ conda activate g1brainco
 # Start the Agent service
 ./launch/launch_trans.sh agent
 ```
+
+Check the output:
+
+| node | info |  |
+| ---- | ---- | ---- |
+| `smach_trans_node` | `All ROS2 services ready` | Confirms the ROS2 services have started |
+| `server` | `UDP discovery listening on ('0.0.0.0', 37020)` | Waiting for LAN broadcast discovery |
+| `agent` | `TCP listening on ('0.0.0.0', 43210)` | State machine command port |
+| `agent` | `TCP listening on ('0.0.0.0', 46000)` | Action/switching command port |
+| `smach_trans_node` | `Agents started` | The network proxy service started successfully |
 
 ### 4. Host PC: Open the Control GUI
 

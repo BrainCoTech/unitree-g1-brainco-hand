@@ -32,8 +32,16 @@ conda activate g1brainco
 ```
 
 检查输出信息:
-- IK初始化结束 `"IK initialization done."`
-- 当显示 `"Request 'configure' to start"` 则可以发送状态转换请求
+
+| node | info | |
+| --------- | --------------------- | ----------------- |
+| stark_node | slave[126] get_device_info... DeviceInfo: ...<br>slave[127] get_device_info... DeviceInfo: ... | 双手通信正常 |
+| high_cmd_node | G1 HighCmd service ready | 下肢运控 bridge 已准备 |
+| smach_main_node | Importing ultralytics YOLO. Please wait... | 等待 YOLO 模型加载完成（如果启用）|
+| smach_main_node | Mode: eeg 检查正确 | 选择的控制模式 |
+| smach_main_node | IK initialization done. | 加载 IK |
+| smach_main_node | Request 'configure' to start | 等待 agent 控制命令 |
+
 
 ### 3. Unitree 终端2: 启动 Agent 网络服务
 
@@ -45,6 +53,17 @@ conda activate g1brainco
 # 启动 Agent 服务
 ./launch/launch_trans.sh agent
 ```
+
+检查输出信息:
+
+| node   | info                                          |              |
+| ------ | --------------------------------------------- | ------------ |
+| smach_trans_node | All ROS2 services ready | 检测 ROS2 服务已启动     |
+| server | UDP discovery listening on ('0.0.0.0', 37020) | 等局域网广播发现     |
+| agent  | TCP listening on ('0.0.0.0', 43210)           | 状态机命令端口      |
+| agent  | TCP listening on ('0.0.0.0', 46000)           | 动作/切换命令端口    |
+| smach_trans_node  | Agents started | 网络代理服务已经启动成功 |
+
 
 ### 4. 控制端 PC: 打开控制 GUI
 ```sh
