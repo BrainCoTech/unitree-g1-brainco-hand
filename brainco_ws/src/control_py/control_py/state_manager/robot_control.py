@@ -565,9 +565,10 @@ class RobotControl:
         else:
             _lowcmd = self.get_low_cmd()
         left_ee, right_ee = self.arm_ik.solve_fk(_lowcmd)
+        split_idx = self.arm_dof
 
         if armside != "right":
-            self.lowcmd_buffer[:7] = _lowcmd[:7]
+            self.lowcmd_buffer[:split_idx] = _lowcmd[:split_idx]
             if self.target_ee_quat_left is None:
                 self.eecmd_buffer.left.set_pose_mat(left_ee, quat_order='wxyz', euler_order='xyz')
             else:
@@ -575,12 +576,12 @@ class RobotControl:
                                                      quat_order='wxyz', euler_order='xyz')
             self.eecmd_fk_buffer.left.set_pose_mat(left_ee, quat_order='wxyz', euler_order='xyz')
             if self.log_buffer_debug:
-                logger.debug(f"L_lowcmd_buffer: {np.round(self.lowcmd_buffer[:7], 3)}")
+                logger.debug(f"L_lowcmd_buffer: {np.round(self.lowcmd_buffer[:split_idx], 3)}")
                 logger.debug(f"L_eecmd_buffer: {self.eecmd_buffer.left}")
                 logger.debug(f"L_eecmd_FK_buffer: {self.eecmd_fk_buffer.left}")
             
         if armside != "left":
-            self.lowcmd_buffer[7:] = _lowcmd[7:]
+            self.lowcmd_buffer[split_idx:] = _lowcmd[split_idx:]
             if self.target_ee_quat_right is None:
                 self.eecmd_buffer.right.set_pose_mat(right_ee, quat_order='wxyz', euler_order='xyz')
             else:
@@ -588,7 +589,7 @@ class RobotControl:
                                                       quat_order='wxyz', euler_order='xyz')
             self.eecmd_fk_buffer.right.set_pose_mat(right_ee, quat_order='wxyz', euler_order='xyz')
             if self.log_buffer_debug:
-                logger.debug(f"R_lowcmd_buffer: {np.round(self.lowcmd_buffer[7:], 3)}")
+                logger.debug(f"R_lowcmd_buffer: {np.round(self.lowcmd_buffer[split_idx:], 3)}")
                 logger.debug(f"R_eecmd_buffer: {self.eecmd_buffer.right}")
                 logger.debug(f"R_eecmd_FK_buffer: {self.eecmd_fk_buffer.right}")
         
@@ -782,3 +783,11 @@ class RobotControl:
                 self.store_curr_cmd(arm, trans_space=False)
 
             # self.arm_control(1., arm)
+
+
+    def _arm_target_for_current_dof(self, target_q):
+        if self.robot_dof != 23 or len(target_q) != 14:
+            return target_q
+
+        # G1 23DOF removes wrist pitch/yaw on both arms, so keep only 5 joints per side.
+        return target_q[:5] + target_q[7:12]
