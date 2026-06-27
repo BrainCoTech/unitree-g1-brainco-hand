@@ -34,7 +34,6 @@ class G1_29_ArmIK_new:
         # fixed cache file path
         self.cache_path = "g1_29_model_cache.pkl"
 
-        
         self.urdf_path = '/home/unitree/g1_description/g1_29dof.urdf'
         self.model_dir = '/home/unitree/g1_description/'
 
@@ -327,7 +326,7 @@ class G1_29_ArmIK_new:
         return left_tf, right_tf
     
         
-class G1_23_ArmIK:
+class G1_23_ArmIK_new:
     def __init__(self, Unit_Test = False, Visualization = False):
         np.set_printoptions(precision=5, suppress=True, linewidth=200)
 
@@ -337,12 +336,8 @@ class G1_23_ArmIK:
         # fixed cache file path
         self.cache_path = "g1_23_model_cache.pkl"
 
-        if not self.Unit_Test:
-            self.urdf_path = '../assets/g1/g1_body23.urdf'
-            self.model_dir = '../assets/g1/'
-        else:
-            self.urdf_path = '../../assets/g1/g1_body23.urdf'
-            self.model_dir = '../../assets/g1/'
+        self.urdf_path = '/home/unitree/g1_description/g1_23dof.urdf'
+        self.model_dir = '/home/unitree/g1_description/'
 
         # Try loading cache first
         if os.path.exists(self.cache_path) and (not self.Visualization):
@@ -605,6 +600,32 @@ class G1_23_ArmIK:
 
             # return sol_q, sol_tauff
             return current_lr_arm_motor_q, np.zeros(self.reduced_robot.model.nv)
+
+    def solve_fk(self, q):
+        """
+        Forward kinematics
+        input: q : joint positions (nq)
+        return: left_wrist_tf, right_wrist_tf  (4x4 SE3 matrix)
+        """
+
+        q = np.asarray(q)
+
+        pin.forwardKinematics(self.reduced_robot.model, self.reduced_robot.data, q)
+
+        pin.updateFramePlacements(self.reduced_robot.model, self.reduced_robot.data)
+
+        left_se3 = self.reduced_robot.data.oMf[self.L_hand_id]
+        right_se3 = self.reduced_robot.data.oMf[self.R_hand_id]
+
+        left_tf = np.eye(4)
+        left_tf[:3, :3] = left_se3.rotation
+        left_tf[:3, 3] = left_se3.translation
+
+        right_tf = np.eye(4)
+        right_tf[:3, :3] = right_se3.rotation
+        right_tf[:3, 3] = right_se3.translation
+
+        return left_tf, right_tf
 
 
 class H1_2_ArmIK:

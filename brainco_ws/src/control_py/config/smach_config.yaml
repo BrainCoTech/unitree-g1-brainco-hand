@@ -27,7 +27,7 @@ mode:
 
 robot:
 
-  robot_dof: 29
+  robot_dof: 23
   safe_height_threshold: 0.07 # 单位:米，相对于机器人腰部零位高度
 
   cameras:

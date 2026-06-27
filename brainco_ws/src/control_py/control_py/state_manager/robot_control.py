@@ -14,8 +14,11 @@ from rclpy.qos import qos_profile_sensor_data
 
 from control_py.arm_ik_control.arm_joints import G1JointIndex
 from control_py.arm_ik_control.cal_arm_ik import Hand
-from control_py.unitree_robot.robot_arm_ik import G1_29_ArmIK_new, G1_23_ArmIK
-from control_py.unitree_robot.robot_arm_real import G1_29_ArmController, G1_29_JointIndex, G1_29_JointArmIndex
+from control_py.unitree_robot.robot_arm_ik import G1_29_ArmIK_new, G1_23_ArmIK_new
+from control_py.unitree_robot.robot_arm_real import (
+    G1_29_ArmController, G1_29_JointIndex, G1_29_JointArmIndex,
+    G1_23_ArmController, G1_23_JointIndex, G1_23_JointArmIndex
+)
 from control_py.teleop_pkg.opencv_cam import CameraConfig, shutdown_dict
 from control_py.teleop_pkg.data_process_new import *
 
@@ -142,7 +145,7 @@ class RobotControl:
     def robot_control_initialization_new(self):
         self.hand_version = 2
         self.body_dof = 15
-        self.arm_dof = 7
+        self.arm_dof = 7 if self.robot_dof == 29 else 5
         self.hand_dof = self.hand_version + 9  # 手指自由度 (一代手:10个关节, 二代手:11个关节)    
 
         # 获取手指关节旋转范围(弧度)
@@ -169,14 +172,16 @@ class RobotControl:
         # logger.info("Initializing IK New...")
         # self.arm_ik_new = G1_29_ArmIK_new(Unit_Test = True, Visualization = False)
         # self.arm_new = G1_29_ArmController(simulation_mode=False)
-        self.arm_new = G1_29_ArmController(simulation_mode=False)
+        # self.arm_new = G1_29_ArmController(simulation_mode=False)
 
         # IK
         logger.info("Initializing IK NEW...")
 
         if self.robot_dof == 23:
-            self.arm_ik = G1_23_ArmIK(Unit_Test = True, Visualization = False)
+            self.arm_new = G1_23_ArmController(simulation_mode=False)
+            self.arm_ik = G1_23_ArmIK_new(Unit_Test = True, Visualization = False)
         else:
+            self.arm_new = G1_29_ArmController(simulation_mode=False)
             self.arm_ik = G1_29_ArmIK_new(Unit_Test = True, Visualization = False)
             
         self.get_logger().info("IK initialization done.\n")
@@ -475,7 +480,9 @@ class RobotControl:
     
     
     
-    def arm_cmd_control(self, ratio, arm_q, arm_tauff=np.zeros(14), armside="both"):
+    def arm_cmd_control(self, ratio, arm_q, arm_tauff=None, armside="both"):
+        if arm_tauff is None:
+            arm_tauff = np.zeros(2 * self.arm_dof)
 
         # Set control target values q & tau
         self.arm_new.ctrl_single_arm(arm_q, arm_tauff, armside=armside)
@@ -484,7 +491,12 @@ class RobotControl:
         cliped_arm_q_target = self.arm_new.clip_single_arm_q_target(armside=armside, clip=False)
 
         # update motor joint cmd based on 'ratio'
-        for idx, joint in enumerate(G1_29_JointArmIndex):
+        if self.robot_dof == 23:
+            JointArmIndex = G1_23_JointArmIndex
+        else:
+            JointArmIndex = G1_29_JointArmIndex
+
+        for idx, joint in enumerate(JointArmIndex):
             if armside == "left" and idx < self.arm_dof or armside == "right" and idx >= self.arm_dof or armside == "both":
                 self.low_cmd.motor_cmd[joint].q = ratio * cliped_arm_q_target[idx] + (1.0 - ratio) * self.lowcmd_buffer[idx]
                 self.low_cmd.motor_cmd[joint].tau = self.arm_new.tauff_target[idx]   
@@ -584,7 +596,9 @@ class RobotControl:
     
     
     # 臂手关节控制（Joint匀速运动）
-    def arm_hand_joint_control(self, start, end, hand_q, arm_q, arm_tau=np.zeros(14), armside="both"):
+    def arm_hand_joint_control(self, start, end, hand_q, arm_q, arm_tau=None, armside="both"):
+        if arm_tau is None:
+            arm_tau = np.zeros(2 * self.arm_dof)
         if start <= self.time_ < end:
             ratio = np.clip((self.time_ - start) / ((end - start - 0.05)), 0.0, 1.0)
             if self.lowcmd_buffer is None or ratio == 1.:
