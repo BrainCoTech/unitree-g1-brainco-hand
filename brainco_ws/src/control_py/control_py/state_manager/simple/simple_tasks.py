@@ -59,10 +59,13 @@ class SimpleTasks(BasicStates):
             hand_q = [0.5, 1.0, 0.1, 0.1, 0.1, 0.1] * 2
             self.arm_hand_joint_control(start, end, hand_q, target_q, armside=armside)
         if end <= self.time_ < end + pause:
-            hand_q = [0.5, 1.0, 0.1, 0.1, 0.1, 0.1] * 2
+            hand_q = [0.6, 1.0, 0.3, 0.3, 0.3, 0.3] * 2
             self.arm_hand_joint_control(end, end + pause, hand_q, target_q, armside=armside)
-        if end + pause <= self.time_ < end + pause + 2.:
-            self.arm_back_zero(end + pause, end + pause + 2., armside)
+        if end <= self.time_ < end + pause + 1.:
+            hand_q = [0.5, 1.0, 0.1, 0.1, 0.1, 0.1] * 2
+            self.arm_hand_joint_control(end, end + pause + 1., hand_q, target_q, armside=armside)
+        if end + pause + 1. <= self.time_ < end + pause + 3.:
+            self.arm_back_zero(end + pause + 1., end + pause + 3., armside)
 
         self.waist_joint_control(start, end, waist_q=0.)
 
