@@ -206,17 +206,17 @@ class SimpleTasksHandler(BasicStatesHandler):
 
     def timer_armup(self):
         self.time_ += self.control_dt_
-        self.showheart(0., 1, "both")
+        self.task_arm_up(0., 1, "both")
         self.publish_all()
 
     def timer_handclose(self):
         self.time_ += self.control_dt_
-        self.showheart(0., 1, "both")
+        self.task_hand_close(0., 1, "both")
         self.publish_all()
 
     def timer_handopen(self):
         self.time_ += self.control_dt_
-        self.showheart(0., 1, "both")
+        self.task_arm_up(0., 1, "both")
         self.publish_all()
 
 

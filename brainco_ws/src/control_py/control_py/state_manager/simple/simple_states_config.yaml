@@ -58,17 +58,17 @@ handside_required_actions: [1, 2, 3, 4]
 
 behavior_trees:
   active:
-    hello_sequence:
-      type: sequence
-      children: [1, 10]
+    # hello_sequence:
+    #   type: sequence
+    #   children: [1, 10]
 
     like_sequence:
       type: sequence
       children: [2, 10]
 
-    rps_sequence:
-      type: sequence
-      children: [3, 10]
+    # rps_sequence:
+    #   type: sequence
+    #   children: [3, 10]
 
     handshake_sequence:
       type: sequence

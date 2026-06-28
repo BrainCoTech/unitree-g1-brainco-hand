@@ -15,10 +15,10 @@ class SimpleTasks(BasicStates):
             duration = round(1/speed, 3)
             hand_q = [0., 0., 0., 0., 0., 0.] * 2
 
-            target_q_1 = [-0.721,  0.727,  0.193, -0.099,  0.911,  0.,  0.656,
-                          -0.721, -0.727, -0.193, -0.099, -0.911,  0., -0.656]
-            target_q_2 = [-0.711,  1.029,  0.275,  0.42,   0.641, 0.,  0.873,
-                          -0.711, -1.029, -0.275,  0.42,  -0.641, 0., -0.873]
+            target_q_1 = [-1.2,  0.727,  0.193, -0.099,  0.911,  0.,  0.656,
+                          -1.2, -0.727, -0.193, -0.099, -0.911,  0., -0.656]
+            target_q_2 = [-1.2,  1.029,  0.275,  0.42,   0.641, 0.,  0.873,
+                          -1.2, -1.029, -0.275,  0.42,  -0.641, 0., -0.873]
             target_q_1 = self._arm_target_for_current_dof(target_q_1)
             target_q_2 = self._arm_target_for_current_dof(target_q_2)
             target_q_avg = [(x + y) / 2 for x, y in zip(target_q_1, target_q_2)]
@@ -61,11 +61,11 @@ class SimpleTasks(BasicStates):
         if end <= self.time_ < end + pause:
             hand_q = [0.6, 1.0, 0.3, 0.3, 0.3, 0.3] * 2
             self.arm_hand_joint_control(end, end + pause, hand_q, target_q, armside=armside)
-        if end <= self.time_ < end + pause + 1.:
+        if end + pause <= self.time_ < end + pause + 1.5:
             hand_q = [0.5, 1.0, 0.1, 0.1, 0.1, 0.1] * 2
-            self.arm_hand_joint_control(end, end + pause + 1., hand_q, target_q, armside=armside)
-        if end + pause + 1. <= self.time_ < end + pause + 3.:
-            self.arm_back_zero(end + pause + 1., end + pause + 3., armside)
+            self.arm_hand_joint_control(end + pause, end + pause + 1.5, hand_q, target_q, armside=armside)
+        if end + pause + 1.5 <= self.time_ < end + pause + 3.:
+            self.arm_back_zero(end + pause + 1.5, end + pause + 3., armside)
 
         self.waist_joint_control(start, end, waist_q=0.)
 
@@ -161,6 +161,22 @@ class SimpleTasks(BasicStates):
                     -0.599, -0.186,  0.029,  0.098, -0.4 ,  -1.271, -0.062]
         target_q = self._arm_target_for_current_dof(target_q)
         hand_q = [0., 0.7, 0.6, 0.6, 0.6, 0.6] * 2
+        if start <= self.time_ < end:
+            self.arm_hand_joint_control(start, end, hand_q, target_q, armside=armside)
+
+    def task_arm_up(self, start, end, armside):
+        target_q = [0.1,  0.9, -0.4,  -0.3, -1.9, 0.0, 0.0,
+                    0.1, -0.9,  0.4,  -0.3, 1.9 , 0.0, 0.0]
+        target_q = self._arm_target_for_current_dof(target_q)
+        hand_q = [0., 1.0, 0., 0.2, 0.27, 0.32] * 2
+        if start <= self.time_ < end:
+            self.arm_hand_joint_control(start, end, hand_q, target_q, armside=armside)
+
+    def task_hand_close(self, start, end, armside):
+        target_q = [0.1,  0.9, -0.4,  -0.3, -1.9, 0.0, 0.0,
+                    0.1, -0.9,  0.4,  -0.3, 1.9 , 0.0, 0.0]
+        target_q = self._arm_target_for_current_dof(target_q)
+        hand_q = [0.9, 1.0, 0., 0.2, 0.27, 0.32] * 2
         if start <= self.time_ < end:
             self.arm_hand_joint_control(start, end, hand_q, target_q, armside=armside)
 
