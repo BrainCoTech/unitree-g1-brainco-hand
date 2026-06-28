@@ -13,6 +13,17 @@ class SimpleTasksHandler(BasicStatesHandler):
     def _normalize_handside(self):
         return self.param.handside if self.param.handside in ("left", "right") else "both"
 
+    def _on_active_armdown_handler(self, action_idx: int):
+        logger.info(f"Enter state {self.sm.get_state()} '{self.action_name[action_idx]}'")
+        self.clear_timer()
+        self.update_cmd_buffer("both")
+        self._timer = self.create_timer(0.01, self.timer_back)
+        self._track_active_action(
+            action_idx,
+            expected_duration=self._get_expected_duration(action_idx),
+        )
+        self.get_logger().info("New timer created.")
+
     def _on_active_hello_handler(self, action_idx: int, handside: str):
         logger.info(f"Enter state {self.sm.get_state()} '{self.action_name[action_idx]}'")
         self.clear_timer()
@@ -99,17 +110,49 @@ class SimpleTasksHandler(BasicStatesHandler):
         )
         self.get_logger().info("New timer created.")
 
-    # Active 10 手臂放下
-    def on_active_10_handler(self):
-        logger.info(f"Enter state {self.sm.get_state()} '{self.action_name[10]}'")
+    # Active 6 手臂放下
+    def on_active_6_handler(self):
+        self._on_active_armdown_handler(6)
+
+    # Active 7 ArmUP
+    def on_active_7_handler(self):
+        logger.info(f"Enter state {self.sm.get_state()} '{self.action_name[7]}'")
         self.clear_timer()
         self.update_cmd_buffer("both")
-        self._timer = self.create_timer(0.01, self.timer_back)
+        self._timer = self.create_timer(0.01, self.timer_armup)
         self._track_active_action(
-            10,
-            expected_duration=self._get_expected_duration(10),
+            7,
+            expected_duration=self._get_expected_duration(7),
         )
         self.get_logger().info("New timer created.")
+
+    # Active 8 HandClose
+    def on_active_8_handler(self):
+        logger.info(f"Enter state {self.sm.get_state()} '{self.action_name[8]}'")
+        self.clear_timer()
+        self.update_cmd_buffer("both")
+        self._timer = self.create_timer(0.01, self.timer_handclose)
+        self._track_active_action(
+            8,
+            expected_duration=self._get_expected_duration(8),
+        )
+        self.get_logger().info("New timer created.")
+
+    # Active 9 HandOpen
+    def on_active_9_handler(self):
+        logger.info(f"Enter state {self.sm.get_state()} '{self.action_name[9]}'")
+        self.clear_timer()
+        self.update_cmd_buffer("both")
+        self._timer = self.create_timer(0.01, self.timer_handopen)
+        self._track_active_action(
+            9,
+            expected_duration=self._get_expected_duration(9),
+        )
+        self.get_logger().info("New timer created.")
+
+    # Active 10 手臂放下
+    def on_active_10_handler(self):
+        self._on_active_armdown_handler(10)
 
     def timer_back(self):
         self.time_ += self.control_dt_
@@ -157,6 +200,21 @@ class SimpleTasksHandler(BasicStatesHandler):
         self.publish_all()
 
     def timer_showheart(self):
+        self.time_ += self.control_dt_
+        self.showheart(0., 1, "both")
+        self.publish_all()
+
+    def timer_armup(self):
+        self.time_ += self.control_dt_
+        self.showheart(0., 1, "both")
+        self.publish_all()
+
+    def timer_handclose(self):
+        self.time_ += self.control_dt_
+        self.showheart(0., 1, "both")
+        self.publish_all()
+
+    def timer_handopen(self):
         self.time_ += self.control_dt_
         self.showheart(0., 1, "both")
         self.publish_all()

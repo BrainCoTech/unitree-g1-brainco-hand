@@ -10,6 +10,10 @@ structure:
         3: Rock-Paper-Scissors
         4: Handshake
         5: Show-Heart
+        6: ArmDown
+        7: ArmUP
+        8: HandClose
+        9: HandOpen
         10: ArmDown_inSeq
   - finalized
 
@@ -81,4 +85,8 @@ active_expected_duration:
   3: 5.0
   4: 7.0
   5: 3.0
+  6: 3.0
+  7: 3.0
+  8: 3.0
+  9: 3.0
   10: 3.0   # ArmDown_inSeq
