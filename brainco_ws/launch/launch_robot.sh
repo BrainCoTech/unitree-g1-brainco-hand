@@ -1,4 +1,21 @@
 #!/bin/bash
+
+echo "Turning off g1 arm action service..."
+cd ~/unitree_sdk2/build/bin
+./turn_off_arm_action_service eth0
+
+if [ $? -ne 0 ]; then
+    echo "Failed to turn off arm action service!"
+    exit 1
+fi
+
+echo "Done."
+
+sleep 1
+
+echo "Starting launch_robot.sh..."
+cd ~/unitree-g1-brainco-hand/brainco_ws
+
 source ~/unitree_ros2/setup.sh
 source ~/unitree_ros2/cyclonedds_ws/install/setup.bash
 source ~/unitree-g1-brainco-hand/brainco_ws/install/setup.bash
