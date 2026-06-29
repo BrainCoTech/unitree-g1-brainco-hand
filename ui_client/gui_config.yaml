@@ -1,0 +1,84 @@
+wired_host: 192.168.123.164
+wireless_host: 192.168.110.105
+port1: 43210
+port2: 46000
+
+guide_table:
+  columns:
+    - 编号
+    - 按键
+    - 模式/动作
+    - 备注
+  rows:
+    - id: "①"
+      keys: "L2 + B"
+      action: "阻尼模式"
+      note: "机器人关节可拖动但有阻尼"
+    - id: "②"
+      keys: "L2 + ↑"
+      action: "预备模式"
+      note: "机器人进入准备姿势但不能站立"
+    - id: "③"
+      keys: "R1 + X"
+      action: "常规运控模式"
+      note: "机器人可以自主站立"
+    - id: "④"
+      keys: "L2 + START"
+      action: "启动程序"
+      note: ""
+    - id: "⑤"
+      keys: "L2 + B"
+      action: "结束程序"
+      note: "软急停"
+    - id: "⑥"
+      keys: "L2 + B 长按5s以上"
+      action: "急停"
+      note: "常规运控模式 -> 阻尼模式"
+    - id: "⑪"
+      keys: "F1 + Y"
+      action: "打招呼"
+      note: "需手动㉔放下手臂"
+    - id: "⑫"
+      keys: "F1 + B"
+      action: "点赞"
+      note: ""
+    - id: "⑬"
+      keys: "F1 + A"
+      action: "握手"
+      note: ""
+    - id: "⑭"
+      keys: "F1 + X"
+      action: "石头剪刀布"
+      note: "需手动㉔放下手臂"
+    - id: "㉑"
+      keys: "F3 + ↑"
+      action: "抬起手臂（端托盘姿势）"
+      note: ""
+    - id: "㉒"
+      keys: "F3 + ←"
+      action: "握紧（托盘）"
+      note: ""
+    - id: "㉓"
+      keys: "F3 + →"
+      action: "松开（托盘）"
+      note: ""
+    - id: "㉔"
+      keys: "F3 + ↓"
+      action: "放下手臂"
+      note: ""
+
+startup_sequence:
+  - 开机
+  - "①"
+  - "②"
+  - "③"
+  - (软件)连接
+  - (软件)启动
+  - "④"
+
+shutdown_sequence:
+  - "⑤"
+  - (软件)结束
+  - 挂上吊架
+  - "⑥"
+  - 关机

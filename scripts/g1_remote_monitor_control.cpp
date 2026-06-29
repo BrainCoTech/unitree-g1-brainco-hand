@@ -179,6 +179,7 @@ class G1RemoteMonitor {
     lowstate_subscriber_->InitChannel(
         std::bind(&G1RemoteMonitor::LowStateHandler, this, std::placeholders::_1),
         1);
+    Speak("遥控器已连接");
   }
 
  private:
@@ -483,12 +484,18 @@ class G1RemoteMonitor {
   }
 
   void LaunchManagedPrograms() {
+    const SmachBinding& stop_binding = kInternalBindings[0];
+    if (TriggerSmachCommand(stop_binding, 43210) &&
+        stop_binding.stop_managed_programs_after_success) {
+      StopManagedPrograms();
+      Speak("程序已终止");
+    }
+
     ReapManagedPrograms();
     if (!managed_process_pids_.empty()) {
       std::cout << "[" << CurrentTimeString()
-                << "] Launch skipped: managed programs still running"
+                << "] Launch continuing with existing managed programs still running"
                 << std::endl;
-      return;
     }
 
     bool launched_any = false;
