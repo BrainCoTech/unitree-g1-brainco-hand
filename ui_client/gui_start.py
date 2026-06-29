@@ -30,7 +30,14 @@ from PySide6.QtWidgets import (
 )
 
 
-CONFIG_PATH = Path(__file__).with_name("gui_config.yaml")
+def _default_config_path() -> Path:
+    # Prefer an external config next to the packaged exe.
+    if getattr(sys, "frozen", False):
+        return Path(sys.executable).resolve().with_name("gui_config.yaml")
+    return Path(__file__).resolve().with_name("gui_config.yaml")
+
+
+CONFIG_PATH = _default_config_path()
 DEFAULT_WIRED_HOST = "192.168.123.164"
 DEFAULT_WIRELESS_HOST = "192.168.110.105"
 DEFAULT_PORT1 = 43210
