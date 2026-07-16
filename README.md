@@ -5,12 +5,16 @@ English Version | [中文版](./README_zh.md)
 Tutorials and simple motion demos for adapting the BrainCo Revo2 dexterous hand to the Unitree G1 (Edu advanced version, 29 DOF).
 
 ## Version Notes
-**Note:** This version supports only the G1 29-DOF model. To adapt it for the G1 23-DOF model, you need to modify the arm motion control parameters.
+Update 2026.7.16
+- Added the `eeg` brain-controlled robot task domain (G1-29 DOF only), which can connect to the BrainCo brain-controlled robot training platform.
+
+Fix 2026.6.29
+- **Important: the built-in Unitree arm control service is automatically disabled before startup** to avoid conflicts between upper-limb motions developed through `/arm_sdk` and the built-in Unitree arm control service, which could otherwise cause abnormal arm motion.
 
 Update 2026.6.8:
 - Improved the state management system with multiple task domains for easier task creation and management
-- `calibrate`: camera calibration
-- `simple`: simple arm motions
+- `calibrate`: camera calibration (G1-29 DOF only)
+- `simple`: simple arm motions (supports G1-23 DOF and G1-29 DOF)
 - Updated the remote UI control interface `ui_client` and its related APIs
 - Updated the dexterous hand SDK in `ros2_stark_ws`
 
@@ -53,7 +57,26 @@ Update 2026.6.8:
 
 [06 Example 1: Simple Motions](./tutorials/README_06_test_run_en.md)
 
-[07 Example 2: Hand-Eye Calibration](./tutorials/README_07_test_run_calibrate_zh.md)
+[07 Example 2: Hand-Eye Calibration](./tutorials/README_07_test_run_calibrate_en.md)
+
+[08 Example 3: Brain-Controlled Robot](./tutorials/README_08_test_run_eeg_en.md)
 
 ## FAQ
 [FAQ English Version](./tutorials/FAQ_en.md) or [FAQ 中文](./tutorials/FAQ_zh.md)
+
+## Development Safety Recommendations
+1. Before joint debugging, make sure all configuration files are set correctly. Recommended test order:
+	- Test arm motion first, then install the dexterous hands for combined testing.
+	- Test simple non-vision motions first.
+	- Test replay motions next.
+	- Test vision-based grasping motions next.
+	- Test lower-limb movement or turning next.
+	- Connect BrainCo brain-controlled robot training platform event mappings last.
+2. For segmented motions, pay attention to whether there is an obvious jump between segments.
+3. Upper-body motion control includes waist motion. If you only need to move the arms, fix the waist; otherwise waist movement can shift the target position.
+4. For motions near a table, use `SafeArmDown` first. The normal `ArmDown` is more suitable when the robot is away from the table and there is enough space below.
+5. If the robot moves abnormally or becomes uncontrollable during joint debugging:
+   - Normal case: immediately click `Ready` to return the robot state to zero directly, or click `Ready (Table Safe)` to return to zero while avoiding the table.
+   - Emergency case: click `Shutdown` directly to stop the program.
+   - If the robot still cannot be controlled, **press and hold the remote controller `Damping Mode (L2 + B)` for more than 5 seconds** to force the robot into damping mode, then power it off.
+6. Before formal joint debugging, actively clear the table and the space around the robot. Leave extra clearance in front of, beside, and below the arms whenever possible.

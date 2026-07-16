@@ -113,16 +113,12 @@ behavior_trees:
       type: sequence
       children:
         - 41
-        # - 42
         - parallel: [43, 44] # Get-Ready, Vision-Apple
         - 45 # Grasp
-        # - 32
-        # - 34
         - 47 # Vision-Hand
         - 48 # Release-Apple
         - 40 # SafeArmDown
-        # - 60 # Back
-        # - 61
+        
     pour_water_sequence:
       type: sequence
       children:

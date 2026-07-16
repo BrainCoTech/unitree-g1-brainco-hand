@@ -55,7 +55,7 @@ python ui_client/ui_client.py
 ```
 
 ### 5. 采集手眼标定数据
-先准备好棋盘格标定板。我们提供与 Revo2 手腕同构的棋盘格标定板3D打印文件[标定板](./tutorials/cad/calibration_27x27.pdf)和[标定板支架](./tutorials/cad/calibration_bracket.STEP)，自行打印后，可直接替换 Revo2 双手完成标定。
+先准备好棋盘格标定板。我们提供与 Revo2 手腕同构的棋盘格标定板3D打印文件[标定板(待更新)](./tutorials/cad/calibration_27x27.pdf)和[标定板支架](./tutorials/cad/calibration_bracket.STEP)，自行打印后，可直接替换 Revo2 双手完成标定。
 
 <p align="center">
   <img src="images/tutorial_calibrate.jpg" width="300">

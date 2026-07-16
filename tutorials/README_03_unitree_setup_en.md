@@ -1,6 +1,10 @@
 ## Install Unitree-SDK
 
-Refer to the [Unitree Documentation Center | Application Development](https://support.unitree.com/home/en/G1_developer/get_sdk) to install and build [unitree_sdk2](https://github.com/unitreerobotics/unitree_sdk2).
+Refer to the [Unitree Documentation Center | Application Development](https://support.unitree.com/home/en/G1_developer/get_sdk).
+1. Download [unitree_sdk2](https://github.com/unitreerobotics/unitree_sdk2).
+2. Copy `scripts/turn_off_arm_action_service.cpp` to `unitree_sdk2/example/g1/high_level/`.
+3. Modify `unitree_sdk2/example/g1/CMakeLists.txt` accordingly.
+4. Build and install `unitree_sdk2`.
 
 ## Install Unitree-ROS2
 1. Refer to the [Unitree Documentation Center | ROS2 Communication Routine](https://support.unitree.com/home/en/G1_developer/ros2_communication_routine) to install and build [unitree_ros2](https://github.com/unitreerobotics/unitree_ros2).
