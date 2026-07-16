@@ -2,7 +2,7 @@
 
 English Version | [中文版](./README_zh.md)
 
-Tutorials and simple motion demos for adapting the BrainCo Revo2 dexterous hand to the Unitree G1 (Edu advanced version, 29 DOF).
+Tutorials and simple motion demos for adapting the BrainCo Revo2 dexterous hand to the Unitree G1 robot.
 
 ## Version Notes
 Update 2026.7.16
