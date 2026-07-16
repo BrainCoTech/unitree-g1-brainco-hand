@@ -1,0 +1,8 @@
+replay:
+  DatasetFolder:  /home/unitree/unitree-g1-brainco-hand/datasets_example/lerobot_datasets_v3.0/
+  ReplayDatasets:
+
+    dataset0:
+      name:  "biubiubiu"
+      file:  unitree_only_head_camera_test24
+      episode_idx: 0

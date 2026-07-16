@@ -1,0 +1,182 @@
+structure:
+  - init_state
+  - config_state
+  - active:
+      initial: "0"
+      children:
+        0: IDLE
+        1: ArmDown
+        2: SafeArmDown
+        10: ArmDown_inSeq
+        11: Hello_l
+        12: Hello_r
+        13: Like_l
+        14: Like_r
+        15: RPS_l
+        16: RPS_r
+        17: Handshake_l
+        18: Handshake_r
+        19: Show-Heart
+        20: Biubiubiu
+        31: TurnLeft-4s
+        32: TurnRight-4s
+        34: Forward-4s
+        36: Forward-TurnLeft-2s
+        37: Forward-TurnRight-2s
+        40: SafeArmDown_inSeq
+        41: Grasp-Apple-Start
+        # 42: Grasp-Apple-Turn
+        43: Get-Ready
+        44: Vision-Apple
+        45: Grasp
+        47: Vision-Hand
+        48: Release-Apple
+        51: Pour-Water-Start
+        52: Vision-Bottle-Cup
+        53: Pour-Water
+        # 60: Back
+        # 61: Back2
+        71: TurnLeft
+        72: TurnRight
+  - finalized
+
+initial_state: init_state
+
+main_trans:
+  configure:
+    id: "f"
+    src: init_state
+    dst: config_state
+    after: "on_configure"
+
+  activate:
+    id: "a"
+    src: config_state
+    dst: active
+    before: "on_active"
+    after: "on_active_0"
+
+  deactivate:
+    id: "d"
+    src: active
+    dst: config_state
+    after: "on_configure"
+
+  shutdown:
+    id: "s"
+    src: "any"
+    dst: finalized
+    before: "on_shutdown"
+
+
+allowed_main_trans:
+  init_state: ["f", "s"]
+  config_state: ["a", "s"]
+  active: ["d", "s"]
+  shutdown: []
+
+# all: 允许跳到所有其他子状态，不包含自己
+# all_self: 允许跳到所有子状态，包含自己
+# 没写出来的状态默认按 all 处理
+allowed_sub_trans:
+  0: all_self
+
+# 列表中的 active 编号仍可被状态机进入
+# 但不会注册到 smach_agent.py
+hidden_action_reg: [31, 32, 34, 36, 37]
+
+handside_required_actions: []
+
+behavior_trees:
+  active:
+    hello_l_armdown_sequence:
+      type: sequence
+      children: [11, 10]
+
+    hello_r_armdown_sequence:
+      type: sequence
+      children: [12, 10]
+
+    like_l_armdown_sequence:
+      type: sequence
+      children: [13, 10]
+
+    like_r_armdown_sequence:
+      type: sequence
+      children: [14, 10]
+
+    biubiubiu_armdown_sequence:
+      type: sequence
+      children: [20, 10]
+
+    grasp_apple_sequence:
+      type: sequence
+      children:
+        - 41
+        # - 42
+        - parallel: [43, 44] # Get-Ready, Vision-Apple
+        - 45 # Grasp
+        # - 32
+        # - 34
+        - 47 # Vision-Hand
+        - 48 # Release-Apple
+        - 40 # SafeArmDown
+        # - 60 # Back
+        # - 61
+    pour_water_sequence:
+      type: sequence
+      children:
+        - parallel: [51, 52]
+        - 53
+        - 40
+
+    left_seq:
+      type: sequence
+      children: [15, 10]
+
+    right_seq:
+      type: sequence
+      children: [16, 10]
+
+    showheart_seq:
+      type: sequence
+      children: [19, 10]
+
+
+active_expected_duration:
+  0: 0.0
+  1: 7.0
+  2: 3.2
+  10: 3.0   # ArmDown_inSeq
+  11: 5.0
+  12: 5.0
+  13: 2.0
+  14: 2.0
+  15: 5.0   # RPS
+  16: 5.0
+  17: 7.0
+  18: 7.0
+  19: 3.0   # Heart
+  20: auto
+  31: 5.2
+  32: 5.2
+  34: 5.2
+  36: 3.2
+  37: 3.2
+  40: 3.0   # SafeArmDown_inSeq
+  41: 0.0
+  42: 2.2
+  43: auto
+  44: auto
+  45: auto
+  47: auto
+  48: auto
+  51: auto
+  52: auto
+  53: auto
+
+  60: 600
+  61: auto
+
+  71: auto
+  72: auto

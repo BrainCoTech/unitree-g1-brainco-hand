@@ -147,7 +147,6 @@ env.bak/
 venv.bak/
 
 # version
-eeg/
 
 # Spyder project settings
 .spyderproject
