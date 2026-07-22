@@ -55,7 +55,7 @@
 
 ### 以下需部署到控制端 PC
 
-[05 Host PC Setup](./tutorials/README_05_control_setup_zh.md)  
+[05 Host PC Setup](./tutorials/README_05_control_setup.md)  
 
 ## 测试运行
 
