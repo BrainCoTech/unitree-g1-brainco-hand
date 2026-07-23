@@ -24,7 +24,14 @@ from robot_agent.robot_client import RobotClient
 from robot_agent.registry import CommandSpec
 
 
-CONFIG_PATH = Path(__file__).with_name("client_config.yaml")
+def _default_config_path() -> Path:
+    # Prefer an external config next to the packaged exe.
+    if getattr(sys, "frozen", False):
+        return Path(sys.executable).resolve().with_name("client_config.yaml")
+    return Path(__file__).resolve().with_name("client_config.yaml")
+
+
+CONFIG_PATH = _default_config_path()
 DEFAULT_HOST = "127.0.0.1"
 DEFAULT_PORT1 = 43210
 DEFAULT_PORT2 = 46000
