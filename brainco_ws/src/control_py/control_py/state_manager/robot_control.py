@@ -481,8 +481,11 @@ class RobotControl:
     
     
     def arm_cmd_control(self, ratio, arm_q, arm_tauff=None, armside="both"):
+        arm_q = self._arm_target_for_current_dof(arm_q)
         if arm_tauff is None:
             arm_tauff = np.zeros(2 * self.arm_dof)
+        else:
+            arm_tauff = self._arm_target_for_current_dof(arm_tauff)
 
         # Set control target values q & tau
         self.arm_new.ctrl_single_arm(arm_q, arm_tauff, armside=armside)
@@ -786,8 +789,69 @@ class RobotControl:
 
 
     def _arm_target_for_current_dof(self, target_q):
-        if self.robot_dof != 23 or len(target_q) != 14:
+        if target_q is None or self.robot_dof != 23:
             return target_q
 
-        # G1 23DOF removes wrist pitch/yaw on both arms, so keep only 5 joints per side.
-        return target_q[:5] + target_q[7:12]
+        target_arr = np.asarray(target_q)
+        if target_arr.ndim != 1 or target_arr.shape[0] != 14:
+            return target_q
+
+        reduced = np.concatenate((target_arr[:5], target_arr[7:12]))
+        if isinstance(target_q, np.ndarray):
+            return reduced
+        return reduced.tolist()
+
+    def _single_arm_target_for_current_dof(self, target_q):
+        if target_q is None or self.robot_dof != 23:
+            return target_q
+
+        target_arr = np.asarray(target_q)
+        if target_arr.ndim != 1 or target_arr.shape[0] != 7:
+            return target_q
+
+        reduced = target_arr[:5]
+        if isinstance(target_q, np.ndarray):
+            return reduced
+        return reduced.tolist()
+
+    def _arm_side_slice(self, armside):
+        if armside == "left":
+            return slice(0, self.arm_dof)
+        if armside == "right":
+            return slice(self.arm_dof, 2 * self.arm_dof)
+        raise ValueError(f"Unsupported armside: {armside}")
+
+    def _replace_arm_side_target(self, target_q, armside, replacement_q):
+        normalized_target = self._arm_target_for_current_dof(target_q)
+        normalized_replacement = self._arm_target_for_current_dof(replacement_q)
+        updated = (
+            normalized_target.copy()
+            if isinstance(normalized_target, np.ndarray)
+            else list(normalized_target)
+        )
+        side_slice = self._arm_side_slice(armside)
+        updated[side_slice] = normalized_replacement[side_slice]
+        return updated
+
+    def _replace_arm_side_values(self, target_q, armside, side_target):
+        normalized_target = self._arm_target_for_current_dof(target_q)
+        normalized_side = self._single_arm_target_for_current_dof(side_target)
+        updated = (
+            normalized_target.copy()
+            if isinstance(normalized_target, np.ndarray)
+            else list(normalized_target)
+        )
+        updated[self._arm_side_slice(armside)] = normalized_side
+        return updated
+
+    def _table_safe_arm_target(self):
+        target_q = [
+            0., 0.7, 1.4, 0.7, 0.2, 0., -0.05,
+            0., -0.7, -1.4, 0.7, -0.2, 0., 0.05,
+        ]
+        normalized_target = self._arm_target_for_current_dof(target_q)
+        return (
+            normalized_target.copy()
+            if isinstance(normalized_target, np.ndarray)
+            else list(normalized_target)
+        )

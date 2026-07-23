@@ -68,12 +68,11 @@ class BasicStates(RobotControl):
     def arm_hand_back_zero_table_safe(self, lr_height, handside="both"):
         if 0. <= self.time_ < 1.:
             self.waist_joint_control(0., 1., waist_q=0.)
-            arm_q = [0., 0.7, 1.4, 0.7, 0.2, 0., -0.05,
-                     0., -0.7, -1.4, 0.7, -0.2, 0., 0.05]
+            arm_q = self._table_safe_arm_target()
             if lr_height[0] < self.safe_height_threshold:
-                arm_q[:7] = self.zero_arm_q[:7]
+                arm_q = self._replace_arm_side_target(arm_q, "left", self.zero_arm_q)
             if lr_height[1] < self.safe_height_threshold:
-                arm_q[7:] = self.zero_arm_q[7:]
+                arm_q = self._replace_arm_side_target(arm_q, "right", self.zero_arm_q)
 
             self.arm_hand_joint_control(0., 1., self.zero_hand, arm_q, armside=handside)
         

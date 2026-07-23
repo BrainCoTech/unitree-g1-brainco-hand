@@ -79,8 +79,7 @@ class EEGTasks(BasicStates):
                   0., 0., 0., 0., 0., 0.]
         if 0. <= self.time_ < 1.:
             self.waist_joint_control(0., 1., waist_q=0.)
-            arm_q = [0., 0.7, 1.4, 0.7, 0.2, 0., -0.05,
-                     0., -0.7, -1.4, 0.7, -0.2, 0., 0.05]
+            arm_q = self._table_safe_arm_target()
             if handside != "right" and lr_height[0] <= self.safe_height_threshold:
                 self.arm_hand_joint_control(0., 1., hand_q, arm_q, armside="left")
             if handside != "left" and lr_height[1] <= self.safe_height_threshold:

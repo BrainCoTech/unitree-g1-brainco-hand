@@ -39,8 +39,10 @@ class CalibrTasks(BasicStates):
         self.ready_to_start = True
 
         # 修改零位防止板子与腿碰撞
-        self.zero_arm_q = [0.4, 0.15, 0., 0.8, -0.5, 0., 0.,
-                            0.4, -0.15, 0., 0.8, 0.5, 0., 0.]
+        self.zero_arm_q = self._arm_target_for_current_dof([
+            0.4, 0.15, 0., 0.8, -0.5, 0., 0.,
+            0.4, -0.15, 0., 0.8, 0.5, 0., 0.,
+        ])
         
         self._calibr_collection_done = False
         
@@ -51,21 +53,33 @@ class CalibrTasks(BasicStates):
         hand_q = [0., 0., 0., 0., 0., 0., 
                   0., 0., 0., 0., 0., 0.]
         if 0. <= self.time_ < 1.:
-            arm_q = [0., 0.8, 1.4, 1.2, 0., 0., 0.,
-                     0., -0.8, -1.4, 1.2, 0., 0., 0.]
+            arm_q = self._arm_target_for_current_dof([
+                0., 0.8, 1.4, 1.2, 0., 0., 0.,
+                0., -0.8, -1.4, 1.2, 0., 0., 0.,
+            ])
             
             if lr_height[0] > self.safe_height_threshold:
-                arm_q[:7] = [0.142,  0.556,  0.501, -0.147, -0.218,  0.052, -0.525]
+                arm_q = self._replace_arm_side_values(
+                    arm_q,
+                    "left",
+                    [0.142, 0.556, 0.501, -0.147, -0.218, 0.052, -0.525],
+                )
             if lr_height[1] > self.safe_height_threshold:
-                arm_q[7:] = [0.142, -0.556, -0.501, -0.147,  0.218,  0.052,  0.525]
+                arm_q = self._replace_arm_side_values(
+                    arm_q,
+                    "right",
+                    [0.142, -0.556, -0.501, -0.147, 0.218, 0.052, 0.525],
+                )
             
             self.arm_hand_joint_control(0., 1., hand_q, arm_q, armside=armside)
             self.waist_joint_control(0., 1., waist_q=0.)
         
         elif 1. <= self.time_ < 2.:
             self.waist_joint_fix(waist_q=0.)
-            arm_q = [0., 0.8, 1.4, 0.5, 0., 0., 0.,
-                     0., -0.8, -1.4, 0.5, 0., 0., 0.]
+            arm_q = self._arm_target_for_current_dof([
+                0., 0.8, 1.4, 0.5, 0., 0., 0.,
+                0., -0.8, -1.4, 0.5, 0., 0., 0.,
+            ])
             if armside != "right" and lr_height[0] <= self.safe_height_threshold:
                 self.arm_hand_joint_control(1., 2., hand_q, arm_q, armside="left")
             if armside != "left" and lr_height[1] <= self.safe_height_threshold:
