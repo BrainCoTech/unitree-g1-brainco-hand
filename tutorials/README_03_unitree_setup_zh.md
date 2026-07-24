@@ -20,7 +20,7 @@ export CYCLONEDDS_URI='<CycloneDDS><Domain><General><Interfaces>
 
 下载官方模型 [g1-description](https://github.com/unitreerobotics/unitree_ros/tree/master/robots/g1_description)，用于 IK 计算
 
-打开 `brainco_ws\src\control_py\control_py\action_pkg\robot_control.py`, 修改 `arm_urdf_path` 路径。
+打开 `brainco_ws/src/control_py/control_py/state_manager/robot_control.py`, 修改 `arm_urdf_path` 路径。
 
 
 ## Install BrainCo SDK and Control System

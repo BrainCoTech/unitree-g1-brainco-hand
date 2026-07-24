@@ -21,7 +21,7 @@ export CYCLONEDDS_URI='<CycloneDDS><Domain><General><Interfaces>
 
 Download the official model [g1-description](https://github.com/unitreerobotics/unitree_ros/tree/master/robots/g1_description) for IK computation.
 
-Open `brainco_ws/src/control_py/control_py/action_pkg/robot_control.py` and modify the `arm_urdf_path` path.
+Open `brainco_ws/src/control_py/control_py/state_manager/robot_control.py` and modify the `arm_urdf_path` path.
 
 ## Install BrainCo SDK and Control System
 ```sh
