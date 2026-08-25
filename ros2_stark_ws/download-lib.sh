@@ -7,7 +7,7 @@ DIST_DIR="${SCRIPT_DIR}/dist"
 VERSION_FILE="${SCRIPT_DIR}/VERSION"
 
 # Configuration
-LIB_VERSION="v1.1.9"
+LIB_VERSION="v2.0.3"
 BASE_URL="https://app.brainco.cn/universal/bc-stark-sdk/libs/${LIB_VERSION}"
 
 # Colorful echo functions
@@ -15,7 +15,9 @@ echo_y() { echo -e "\033[1;33m$*\033[0m"; } # Yellow
 echo_r() { echo -e "\033[0;31m$*\033[0m"; } # Red
 
 # Check if version is already installed
-if [ -f "$VERSION_FILE" ] && grep -F --quiet "$LIB_VERSION" "$VERSION_FILE"; then
+if [ -f "$VERSION_FILE" ] && grep -F --quiet "$LIB_VERSION" "$VERSION_FILE" \
+  && [ -f "${DIST_DIR}/include/stark-sdk.h" ] \
+  && find "${DIST_DIR}/shared" -type f -name '*bc_stark_sdk*' -print -quit 2>/dev/null | grep -q .; then
   echo_y "[bc-stark-sdk] (${LIB_VERSION}) is already installed"
   cat "$VERSION_FILE"
   exit 0
@@ -88,10 +90,10 @@ unzip -o -q "${SCRIPT_DIR}/${ZIP_NAME}" -d "$SCRIPT_DIR" || {
 rm -f "${SCRIPT_DIR}/${ZIP_NAME}"
 rm -rf "${SCRIPT_DIR}/__MACOSX"
 rm -rf "${DIST_DIR}/__MACOSX"
-find dist/include \
+find "${DIST_DIR}/include" \
   -type f \
   ! -name 'stark-sdk.h' \
-  ! -path 'dist/include/zlgcan/*' \
+  ! -path "${DIST_DIR}/include/zlgcan/*" \
   -exec rm -f {} \;
 
 case "$OS_TYPE" in
