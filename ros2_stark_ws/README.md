@@ -5,19 +5,17 @@
 ### 下载依赖
 
 ```shell
-# First download libs, in project root directory
-rm VERSION
+# Download the matching SDK header and runtime library.
 ./download-lib.sh
 
 # 下载完成后目录包含如下
-ros2_stark_ws/src/ros2_stark_controller/lib
-└── libbc_stark_sdk.so
-
-ros2_stark_ws/src/ros2_stark_controller/include
-└── ros2_stark_controller
-    ├── stark-sdk.h
-    └── stark_node.hpp
+ros2_stark_ws/dist
+├── include/stark-sdk.h
+└── shared/<platform>/libbc_stark_sdk.*
 ```
+
+The controller compiles and links against this single downloaded SDK copy so
+that the C header and runtime library cannot drift to different versions.
 
 ### 启动控制器节点
 

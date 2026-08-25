@@ -9,7 +9,7 @@
 #ifndef STARK_COMMON_H
 #define STARK_COMMON_H
 
-#include "ros2_stark_controller_new/stark-sdk.h"
+#include <stark-sdk.h>
 #include "ros2_stark_controller_new/platform_compat.h"
 #include <stdbool.h>
 #include <stdint.h>
@@ -60,7 +60,7 @@ void get_and_print_extended_info(DeviceHandler *handle, uint8_t slave_id);
  * 
  * API selection guide:
  * - Motor API: Revo1 Basic/Touch use Revo1 API; Revo1 Advanced/AdvancedTouch and all Revo2 use Revo2 API
- * - Touch API: Revo1 Touch/AdvancedTouch use Revo1 Touch API; Revo2 Touch/TouchPressure use Revo2 Touch API
+ * - Touch API: use SDK capability helpers instead of relying on enum ranges
  * 
  * @param handle Device handler
  * @param slave_id Slave device ID
@@ -94,7 +94,7 @@ bool hw_uses_revo1_touch_api(StarkHardwareType hw_type);
 
 /**
  * @brief Check if hardware type uses Revo2 touch API
- * Revo2 Touch and Revo2 Touch Pressure use Revo2 touch API (uniform sensor structure)
+ * Revo2 capacitive, Force3D, and ArrayPressure devices use Revo2 touch APIs
  * @param hw_type Hardware type
  * @return true if uses Revo2 touch API
  */
@@ -127,12 +127,16 @@ int get_current_time_ms(void);
  * Derived from StarkHardwareType:
  * - REVO1_TOUCH, REVO1_ADVANCED_TOUCH, REVO2_TOUCH -> Capacitive
  * - REVO2_TOUCH_PRESSURE -> Pressure (Modulus)
+ * - REVO2_TOUCH_FORCE3D -> Force3D
+ * - REVO2_TOUCH_ARRAY_PRESSURE -> ArrayPressure
  * - Others -> None
  */
 typedef enum {
   TOUCH_TYPE_NONE = 0,       // No touch sensor
   TOUCH_TYPE_CAPACITIVE = 1, // Capacitive touch (Revo1 Touch, Revo2 Touch)
-  TOUCH_TYPE_PRESSURE = 2    // Pressure touch / Modulus (Revo2 only)
+  TOUCH_TYPE_PRESSURE = 2,      // Pressure touch / Modulus (Revo2 only)
+  TOUCH_TYPE_FORCE3D = 3,       // Force3D touch (Revo2 only)
+  TOUCH_TYPE_ARRAY_PRESSURE = 4 // ArrayPressure touch (Revo2 only)
 } TouchSensorType;
 
 /**

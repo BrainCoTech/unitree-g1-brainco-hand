@@ -12,7 +12,7 @@
  */
 
 #include "ros2_stark_controller_new/can_common.h"
-#include "ros2_stark_controller_new/stark-sdk.h"
+#include <stark-sdk.h>
 #include "ros2_stark_controller_new/platform_compat.h"
 #include <errno.h>
 #include <stdbool.h>

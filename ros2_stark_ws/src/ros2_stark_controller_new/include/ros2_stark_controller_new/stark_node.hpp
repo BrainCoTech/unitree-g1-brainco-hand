@@ -14,7 +14,7 @@
 #include "ros2_stark_msgs/msg/touch_status.hpp"
 #include "ros2_stark_msgs/msg/set_motor_multi.hpp"
 #include "ros2_stark_msgs/msg/set_motor_single.hpp"
-#include "ros2_stark_controller_new/stark-sdk.h"
+#include <stark-sdk.h>
 // #include "ros2_stark_controller/zcan.h"
 
 class StarkNode : public rclcpp::Node {
@@ -88,4 +88,3 @@ private:
 };
 
 #endif // STARK_NODE_HPP
-

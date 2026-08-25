@@ -39,8 +39,7 @@ StarkNode::StarkNode() : Node("stark_node"), handle_(nullptr) {
   // Get and print device info
   get_and_print_device_info(ctx.handle, ctx.slave_id);
 
-  if (fw_type_ == StarkHardwareType::STARK_HARDWARE_TYPE_REVO1_TOUCH || 
-      fw_type_ == StarkHardwareType::STARK_HARDWARE_TYPE_REVO2_TOUCH) {
+  if (stark_get_touch_sensor_type(static_cast<uint8_t>(fw_type_)) == TOUCH_TYPE_CAPACITIVE) {
     // 启用全部触觉传感器
     stark_enable_touch_sensor(handle_, slave_id_, 0x1F);
     // usleep(1000 * 1000); // wait for touch sensor to be ready
@@ -125,8 +124,7 @@ StarkNode::~StarkNode() {
 
 void StarkNode::timer_callback() {
   publish_motor_status();
-  if (fw_type_ == StarkHardwareType::STARK_HARDWARE_TYPE_REVO1_TOUCH || 
-      fw_type_ == StarkHardwareType::STARK_HARDWARE_TYPE_REVO2_TOUCH) {
+  if (stark_get_touch_sensor_type(static_cast<uint8_t>(fw_type_)) == TOUCH_TYPE_CAPACITIVE) {
     publish_touch_status();
   }
 }

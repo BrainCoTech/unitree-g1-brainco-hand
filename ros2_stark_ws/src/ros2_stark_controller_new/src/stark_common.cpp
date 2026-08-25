@@ -78,6 +78,12 @@ bool get_and_print_device_info(DeviceHandler *handle, uint8_t slave_id) {
     case STARK_HARDWARE_TYPE_REVO2_TOUCH_PRESSURE:
       hw_type = "Revo2 Touch (Pressure/Modulus)";
       break;
+    case STARK_HARDWARE_TYPE_REVO2_TOUCH_FORCE3D:
+      hw_type = "Revo2 Touch (Force3D)";
+      break;
+    case STARK_HARDWARE_TYPE_REVO2_TOUCH_ARRAY_PRESSURE:
+      hw_type = "Revo2 Touch (ArrayPressure)";
+      break;
     default:
       break;
     }
@@ -132,30 +138,23 @@ StarkHardwareType get_device_hardware_type(DeviceHandler *handle, uint8_t slave_
 }
 
 bool hw_uses_revo1_motor_api(StarkHardwareType hw_type) {
-  return (hw_type == STARK_HARDWARE_TYPE_REVO1_PROTOBUF ||
-          hw_type == STARK_HARDWARE_TYPE_REVO1_BASIC ||
-          hw_type == STARK_HARDWARE_TYPE_REVO1_TOUCH);
+  return stark_uses_revo1_motor_api(static_cast<uint8_t>(hw_type));
 }
 
 bool hw_uses_revo2_motor_api(StarkHardwareType hw_type) {
-  return !hw_uses_revo1_motor_api(hw_type);
+  return !stark_uses_revo1_motor_api(static_cast<uint8_t>(hw_type));
 }
 
 bool hw_uses_revo1_touch_api(StarkHardwareType hw_type) {
-  return (hw_type == STARK_HARDWARE_TYPE_REVO1_TOUCH ||
-          hw_type == STARK_HARDWARE_TYPE_REVO1_ADVANCED_TOUCH);
+  return stark_uses_revo1_touch_api(static_cast<uint8_t>(hw_type));
 }
 
 bool hw_uses_revo2_touch_api(StarkHardwareType hw_type) {
-  return (hw_type == STARK_HARDWARE_TYPE_REVO2_TOUCH ||
-          hw_type == STARK_HARDWARE_TYPE_REVO2_TOUCH_PRESSURE);
+  return stark_uses_revo2_touch_api(static_cast<uint8_t>(hw_type));
 }
 
 bool hw_has_touch_sensor(StarkHardwareType hw_type) {
-  return (hw_type == STARK_HARDWARE_TYPE_REVO1_TOUCH ||
-          hw_type == STARK_HARDWARE_TYPE_REVO1_ADVANCED_TOUCH ||
-          hw_type == STARK_HARDWARE_TYPE_REVO2_TOUCH ||
-          hw_type == STARK_HARDWARE_TYPE_REVO2_TOUCH_PRESSURE);
+  return stark_is_touch_device(static_cast<uint8_t>(hw_type));
 }
 
 // Legacy functions for backward compatibility
@@ -202,6 +201,8 @@ const char* get_hardware_type_name_str(uint8_t hw_type) {
         case STARK_HARDWARE_TYPE_REVO2_BASIC: return "Revo2 Basic";
         case STARK_HARDWARE_TYPE_REVO2_TOUCH: return "Revo2 Touch (Capacitive)";
         case STARK_HARDWARE_TYPE_REVO2_TOUCH_PRESSURE: return "Revo2 Touch (Pressure)";
+        case STARK_HARDWARE_TYPE_REVO2_TOUCH_FORCE3D: return "Revo2 Touch (Force3D)";
+        case STARK_HARDWARE_TYPE_REVO2_TOUCH_ARRAY_PRESSURE: return "Revo2 Touch (ArrayPressure)";
         default: return "Unknown";
     }
 }
@@ -211,6 +212,8 @@ const char* get_touch_type_name_str(TouchSensorType touch_type) {
         case TOUCH_TYPE_NONE: return "None";
         case TOUCH_TYPE_CAPACITIVE: return "Capacitive";
         case TOUCH_TYPE_PRESSURE: return "Pressure (Modulus)";
+        case TOUCH_TYPE_FORCE3D: return "Force3D";
+        case TOUCH_TYPE_ARRAY_PRESSURE: return "ArrayPressure";
         default: return "Unknown";
     }
 }
