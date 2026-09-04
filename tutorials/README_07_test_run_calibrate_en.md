@@ -60,10 +60,14 @@ python ui_client/ui_client.py
 ```
 
 ### 5. Collect Hand-Eye Calibration Data
-Prepare a chessboard calibration board first. We provide a 3D-printable [calibration board(to be updated)](./tutorials/cad/calibration_27x27.pdf) and a [calibration board bracket](./tutorials/cad/calibration_bracket.STEP) with the same wrist interface as the Revo2 hand. After printing, you can directly replace the Revo2 hands with them for calibration.
+Prepare a chessboard calibration board first.
+- Calibration board bracket: We provide a 3D-printable [calibration board bracket](./tutorials/cad/calibration_bracket.STEP) with the same wrist interface as the Revo2 hand. You can print it yourself.
+- Chessboard calibration board: Please design it yourself according to the [calibration board pattern](./tutorials/cad/calibration_27x27.pdf), and mount it onto the calibration board bracket.
+After assembly, you can directly replace the Revo2 hands with the board/bracket assembly for calibration.
 
 <p align="center">
-  <img src="images/tutorial_calibrate.jpg" width="300">
+  <img src="images/tutorial_calibr_board.jpg" height="300">
+  <img src="images/tutorial_calibrate.jpg" height="300">
 </p>
 
 Run calibration for the left and right arms separately:

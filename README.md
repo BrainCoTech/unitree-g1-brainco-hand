@@ -7,6 +7,7 @@ Tutorials and simple motion demos for adapting the BrainCo Revo2 dexterous hand 
 ## Version Notes
 Update 2026.7.16
 - Added the `eeg` brain-controlled robot task domain (G1-29 DOF only), which can connect to the BrainCo brain-controlled robot training platform.
+- Note: Upper-limb motions do not lock the WaistRoll and WaistPitch joints. We recommend using single-waist mode or adding the required locking logic yourself.
 
 Fix 2026.6.29
 - **Important: the built-in Unitree arm control service is automatically disabled before startup** to avoid conflicts between upper-limb motions developed through `/arm_sdk` and the built-in Unitree arm control service, which could otherwise cause abnormal arm motion.
