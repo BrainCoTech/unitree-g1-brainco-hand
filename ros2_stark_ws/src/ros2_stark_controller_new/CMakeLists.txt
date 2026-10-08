@@ -28,7 +28,7 @@ endif()
 if(NOT EXISTS "${STARK_SDK_INCLUDE_DIR}/stark-sdk.h" OR
    NOT EXISTS "${STARK_SDK_LIBRARY}")
   message(FATAL_ERROR
-    "BrainCo Stark SDK v2.0.3 is missing. Run ros2_stark_ws/download-lib.sh before building.")
+    "BrainCo Stark SDK v2.0.5 is missing. Run ros2_stark_ws/download-lib.sh before building.")
 endif()
 
 add_executable(${EXEC_NAME} 
