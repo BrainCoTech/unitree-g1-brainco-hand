@@ -17,6 +17,17 @@ ros2_stark_ws/dist
 The controller compiles and links against this single downloaded SDK copy so
 that the C header and runtime library cannot drift to different versions.
 
+Linux ARM64 (including the G1) downloads SDK **2.0.6**. Other platforms remain
+on **2.0.5** until matching 2.0.6 packages are available. Rerun `./download-lib.sh`
+and clean/rebuild the workspace when upgrading an existing installation.
+
+The ARM64 archive includes the matching header, shared library, and MIT license.
+Its SHA-256 is `907907f8572858b6e38d4e2b5cb1a33efa5b59a1fe4795930f206fa8f1b3bd10`.
+Revo2Touch uses `STARK_HARDWARE_TYPE_REVO2_TOUCH` (`11`); the legacy value `4`
+now identifies Revo1AdvancedTouch. The node logs a touch-enable failure when
+the SDK provides the status-returning API. Success confirms the transport
+operation, not sensor calibration or measurement accuracy.
+
 ### 启动控制器节点
 
 ```shell
