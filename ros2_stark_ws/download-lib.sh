@@ -9,11 +9,7 @@ VERSION_FILE="${SCRIPT_DIR}/VERSION"
 # Configuration
 OS_TYPE=$(uname -s)
 ARCH=$(uname -m)
-LIB_VERSION="v2.0.5"
-# The 2.0.6 C SDK is currently published for Linux ARM64 only.
-if [[ "$OS_TYPE" == "Linux" && "$ARCH" == "aarch64" ]]; then
-  LIB_VERSION="v2.0.6"
-fi
+LIB_VERSION="v2.0.6"
 BASE_URL="https://app.brainco.cn/universal/bc-stark-sdk/libs/${LIB_VERSION}"
 
 # Colorful echo functions

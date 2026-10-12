@@ -40,15 +40,11 @@ StarkNode::StarkNode() : Node("stark_node"), handle_(nullptr) {
   get_and_print_device_info(ctx.handle, ctx.slave_id);
 
   if (stark_get_touch_sensor_type(static_cast<uint8_t>(fw_type_)) == TOUCH_TYPE_CAPACITIVE) {
-    // Enable all five sensors and report transport failures when supported.
-#ifdef STARK_HAS_TOUCH_WRITE_STATUS
+    // Enable all five sensors and report transport failures.
     if (stark_enable_touch_sensor_with_status(handle_, slave_id_, 0x1F) != 0) {
       RCLCPP_ERROR(this->get_logger(),
                    "Failed to enable touch sensors for slave %d", slave_id_);
     }
-#else
-    stark_enable_touch_sensor(handle_, slave_id_, 0x1F);
-#endif
   }
 
   // Initialize services
