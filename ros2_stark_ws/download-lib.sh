@@ -7,7 +7,9 @@ DIST_DIR="${SCRIPT_DIR}/dist"
 VERSION_FILE="${SCRIPT_DIR}/VERSION"
 
 # Configuration
-LIB_VERSION="v2.0.5"
+OS_TYPE=$(uname -s)
+ARCH=$(uname -m)
+LIB_VERSION="v2.0.6"
 BASE_URL="https://app.brainco.cn/universal/bc-stark-sdk/libs/${LIB_VERSION}"
 
 # Colorful echo functions
@@ -24,8 +26,6 @@ if [ -f "$VERSION_FILE" ] && grep -F --quiet "$LIB_VERSION" "$VERSION_FILE" \
 fi
 
 # Determine platform and library name
-OS_TYPE=$(uname -s)
-ARCH=$(uname -m)
 IS_ARM64=$([[ "$ARCH" == "aarch64" ]] && echo 1 || echo 0)
 echo_y "OS type: $OS_TYPE, ARCH: $ARCH"
 case "$OS_TYPE" in
