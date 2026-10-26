@@ -28,7 +28,7 @@ endif()
 if(NOT EXISTS "${STARK_SDK_INCLUDE_DIR}/stark-sdk.h" OR
    NOT EXISTS "${STARK_SDK_LIBRARY}")
   message(FATAL_ERROR
-    "BrainCo Stark SDK v2.0.3 is missing. Run ros2_stark_ws/download-lib.sh before building.")
+    "BrainCo Stark SDK v2.0.6 is missing. Run ros2_stark_ws/download-lib.sh before building.")
 endif()
 
 add_executable(${EXEC_NAME} 
@@ -36,6 +36,7 @@ add_executable(${EXEC_NAME}
   src/stark_common.cpp
   src/can_common.cpp
   )
+
 target_include_directories(${EXEC_NAME} PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<BUILD_INTERFACE:${STARK_SDK_INCLUDE_DIR}>
