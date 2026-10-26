@@ -42,13 +42,30 @@ SSH_TIMEOUT = 10
 
 
 def _default_config_path() -> Path:
-    # Prefer an external config next to the packaged exe.
+    # Prefer a user-editable config next to the packaged exe, then bundled data.
     if getattr(sys, "frozen", False):
-        return Path(sys.executable).resolve().with_name("client_config.yaml")
+        external_path = Path(sys.executable).resolve().with_name("client_config.yaml")
+        if external_path.exists():
+            return external_path
+
+        bundled_dir = Path(
+            getattr(sys, "_MEIPASS", Path(sys.executable).resolve().parent)
+        )
+        bundled_path = bundled_dir / "client_config.yaml"
+        if bundled_path.exists():
+            return bundled_path
+
+        return external_path
     return Path(__file__).resolve().with_name("client_config.yaml")
 
 
 CONFIG_PATH = _default_config_path()
+
+
+def _config_path_for_write(path: Path) -> Path:
+    if getattr(sys, "frozen", False):
+        return Path(sys.executable).resolve().with_name(path.name)
+    return path
 DEFAULT_HOST = "127.0.0.1"
 DEFAULT_PORT1 = 43210
 DEFAULT_PORT2 = 46000
@@ -1022,6 +1039,9 @@ class MainWindow(QWidget):
         wireless_host: str,
         connection_mode: str,
     ):
+        global GUI_CONFIG_PATH
+
+        config_path = _config_path_for_write(GUI_CONFIG_PATH)
         config_text = (
             GUI_CONFIG_PATH.read_text(encoding="utf-8")
             if GUI_CONFIG_PATH.exists()
@@ -1069,7 +1089,9 @@ class MainWindow(QWidget):
                     lines.append(f"{key}: {value}")
             saved_text = "\n".join(lines).rstrip() + "\n"
 
-        GUI_CONFIG_PATH.write_text(saved_text, encoding="utf-8")
+        config_path.write_text(saved_text, encoding="utf-8")
+        GUI_CONFIG_PATH = config_path
+        gui_start_module.CONFIG_PATH = config_path
 
     def open_connection_config(self):
         global SSH_WIRED_HOST, SSH_WIRELESS_HOST

@@ -31,9 +31,20 @@ from PySide6.QtWidgets import (
 
 
 def _default_config_path() -> Path:
-    # Prefer an external config next to the packaged exe.
+    # Prefer a user-editable config next to the packaged exe, then bundled data.
     if getattr(sys, "frozen", False):
-        return Path(sys.executable).resolve().with_name("gui_config.yaml")
+        external_path = Path(sys.executable).resolve().with_name("gui_config.yaml")
+        if external_path.exists():
+            return external_path
+
+        bundled_dir = Path(
+            getattr(sys, "_MEIPASS", Path(sys.executable).resolve().parent)
+        )
+        bundled_path = bundled_dir / "gui_config.yaml"
+        if bundled_path.exists():
+            return bundled_path
+
+        return external_path
     return Path(__file__).resolve().with_name("gui_config.yaml")
 
 
