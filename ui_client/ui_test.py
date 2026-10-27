@@ -20,8 +20,9 @@ except ImportError:
 
 from PySide6.QtWidgets import (
     QApplication, QWidget, QTextEdit, QPushButton,
-    QVBoxLayout, QHBoxLayout, QGridLayout, QMessageBox, QGroupBox, QLineEdit, QLabel,
+    QVBoxLayout, QHBoxLayout, QMessageBox, QGroupBox, QLineEdit, QLabel,
     QSplitter, QTabWidget, QComboBox, QDialog, QDialogButtonBox, QFormLayout,
+    QSizePolicy,
 )
 from PySide6.QtCore import QObject, Signal, Slot, QPoint, Qt
 from PySide6.QtGui import QColor, QPainter, QPen, QPolygon, QTextCursor
@@ -839,16 +840,27 @@ class MainWindow(QWidget):
 
         # --- 右侧按钮区 ---
         self.group_46000 = QGroupBox(f"执行动作")
+        self.group_46000.setSizePolicy(
+            QSizePolicy.Policy.Preferred,
+            QSizePolicy.Policy.Maximum,
+        )
         self.layout_46000 = QVBoxLayout(self.group_46000)
 
         # Action 区
         self.group_action = QGroupBox("Action (Sleep)")
-        self.layout_action = QGridLayout(self.group_action)
+        self.group_action.setSizePolicy(
+            QSizePolicy.Policy.Preferred,
+            QSizePolicy.Policy.Maximum,
+        )
+        self.layout_action = QVBoxLayout(self.group_action)
         self.layout_action.setContentsMargins(9, 9, 9, 9)
-        self.layout_action.setHorizontalSpacing(30)
-        self.layout_action.setVerticalSpacing(8)
+        self.layout_action.setSpacing(1)
 
         self.layout_46000.addWidget(self.group_action)
+        self.layout_46000.setAlignment(
+            self.group_action,
+            Qt.AlignmentFlag.AlignTop,
+        )
 
         # ===== 布局 =====
 
@@ -860,7 +872,12 @@ class MainWindow(QWidget):
 
         # 右侧：46000 按钮
         top_right = QVBoxLayout()
-        top_right.addWidget(self.group_46000)
+        top_right.addWidget(
+            self.group_46000,
+            0,
+            Qt.AlignmentFlag.AlignTop,
+        )
+        top_right.addWidget(self.log_exec, 1)
 
         top_layout = QHBoxLayout()
         top_layout.addLayout(top_left, 1)
@@ -870,7 +887,6 @@ class MainWindow(QWidget):
         action_layout = QVBoxLayout(action_tab)
         action_layout.addLayout(host_layout)
         action_layout.addLayout(top_layout, 2)
-        action_layout.addWidget(self.log_exec, 1)
         self.log_exec.setMinimumHeight(150)
         self._apply_theme()
 
@@ -2000,13 +2016,18 @@ class MainWindow(QWidget):
 
         spec = self.commands.get(port, [])[index]
         row_widget = QWidget()
+        row_widget.setSizePolicy(
+            QSizePolicy.Policy.Preferred,
+            QSizePolicy.Policy.Fixed,
+        )
         row_widget.setStyleSheet("background: transparent;")
         row_layout = QHBoxLayout(row_widget)
         row_layout.setContentsMargins(0, 0, 0, 0)
         row_layout.setSpacing(6)
 
         btn = QPushButton(text)
-        btn.setStyleSheet("text-align: left; padding-left: 40px;")
+        btn.setStyleSheet("text-align: left; padding: 0 0 0 40px;")
+        btn.setFixedHeight(26)
         btn.clicked.connect(partial(self.exec_command, port, index, "both"))
         row_layout.addWidget(btn, 1)
         side_buttons = []
@@ -2014,12 +2035,16 @@ class MainWindow(QWidget):
         if self._requires_handside(spec):
             left_btn = QPushButton("L")
             left_btn.setFixedWidth(36)
+            left_btn.setFixedHeight(26)
+            left_btn.setStyleSheet("padding: 0;")
             left_btn.clicked.connect(partial(self.exec_command, port, index, "left"))
             row_layout.addWidget(left_btn)
             side_buttons.append(left_btn)
 
             right_btn = QPushButton("R")
             right_btn.setFixedWidth(36)
+            right_btn.setFixedHeight(26)
+            right_btn.setStyleSheet("padding: 0;")
             right_btn.clicked.connect(partial(self.exec_command, port, index, "right"))
             row_layout.addWidget(right_btn)
             side_buttons.append(right_btn)
@@ -2232,6 +2257,7 @@ class MainWindow(QWidget):
         )
         return (
             f"{alignment} "
+            "padding-top: 0; padding-bottom: 0; "
             f"background-color: {background_color}; "
             f"color: {text_color}; "
             f"border: {border_width}px solid {border_color}; "
@@ -2242,10 +2268,34 @@ class MainWindow(QWidget):
 
         button_count = len(self.buttons["action"])
         if button_count == 0:
+            self.group_action.setFixedHeight(72)
+            margins = self.layout_46000.contentsMargins()
+            self.group_46000.setFixedHeight(
+                self.group_action.height() + margins.top() + margins.bottom()
+            )
             return
 
+        for widget in self.buttons["action"]:
+            self.layout_action.removeWidget(widget)
+
         for index, widget in enumerate(self.buttons["action"]):
-            self.layout_action.addWidget(widget, index, 0)
+            self.layout_action.insertWidget(
+                index,
+                widget,
+                0,
+                Qt.AlignmentFlag.AlignTop,
+            )
+            widget.setFixedHeight(28)
+
+        self.group_action.setFixedHeight(
+            72
+            + button_count * 28
+            + max(button_count - 1, 0) * self.layout_action.spacing()
+        )
+        margins = self.layout_46000.contentsMargins()
+        self.group_46000.setFixedHeight(
+            self.group_action.height() + margins.top() + margins.bottom()
+        )
 
     def rescan_commands(self, reset_state=True):
 

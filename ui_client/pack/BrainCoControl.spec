@@ -5,7 +5,7 @@ from pathlib import Path
 from PyInstaller.utils.hooks import collect_submodules
 
 
-PACK_DIR = Path(__file__).resolve().parent
+PACK_DIR = Path(SPECPATH).resolve()
 CLIENT_DIR = PACK_DIR.parent
 
 
