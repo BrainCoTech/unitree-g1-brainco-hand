@@ -1,11 +1,18 @@
 # -*- mode: python ; coding: utf-8 -*-
 
+from pathlib import Path
+
+
+PACK_DIR = Path(SPECPATH).resolve()
+CLIENT_DIR = PACK_DIR.parent
 
 a = Analysis(
-    ['ui_client.py'],
-    pathex=[],
+    [str(CLIENT_DIR / 'ui_client.py')],
+    pathex=[str(CLIENT_DIR)],
     binaries=[],
-    datas=[],
+    datas=[
+        (str(CLIENT_DIR / 'config' / 'client_config.yaml'), '.'),
+    ],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},

@@ -5,9 +5,11 @@ param(
 $ErrorActionPreference = "Stop"
 
 $packDir = $PSScriptRoot
+$uiClientDir = Split-Path -Parent $packDir
+$repoRoot = Split-Path -Parent $uiClientDir
 $specPath = Join-Path $packDir "BrainCoControl.spec"
-$distDir = Join-Path $packDir "dist"
-$workDir = Join-Path $packDir "build"
+$distDir = Join-Path $repoRoot "dist"
+$workDir = Join-Path $repoRoot "build"
 $exeTarget = Join-Path $distDir "BrainCoControl.exe"
 
 if (!(Test-Path -LiteralPath $PythonExe)) {

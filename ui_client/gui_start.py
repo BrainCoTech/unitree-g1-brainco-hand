@@ -45,7 +45,7 @@ def _default_config_path() -> Path:
             return bundled_path
 
         return external_path
-    return Path(__file__).resolve().with_name("gui_config.yaml")
+    return Path(__file__).resolve().parent / "config" / "gui_config.yaml"
 
 
 CONFIG_PATH = _default_config_path()

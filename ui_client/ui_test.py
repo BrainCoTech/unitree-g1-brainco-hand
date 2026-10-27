@@ -57,7 +57,7 @@ def _default_config_path() -> Path:
             return bundled_path
 
         return external_path
-    return Path(__file__).resolve().with_name("client_config.yaml")
+    return Path(__file__).resolve().parent / "config" / "client_config.yaml"
 
 
 CONFIG_PATH = _default_config_path()

@@ -4,14 +4,16 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-$repoRoot = Split-Path -Parent $PSScriptRoot
-$specPath = Join-Path $repoRoot "ui_client\UIClient.spec"
+$packDir = $PSScriptRoot
+$uiClientDir = Split-Path -Parent $packDir
+$repoRoot = Split-Path -Parent $uiClientDir
+$specPath = Join-Path $packDir "RobotControl.spec"
 $distDir = Join-Path $repoRoot "dist"
-$exeTarget = Join-Path $distDir "UIClient.exe"
-$configSource = Join-Path $repoRoot "ui_client\client_config.yaml"
-$configTarget = Join-Path $distDir "client_config.yaml"
+$exeTarget = Join-Path $distDir "RobotControl.exe"
+$configSource = Join-Path $uiClientDir "config\gui_config.yaml"
+$configTarget = Join-Path $distDir "gui_config.yaml"
 
-& $PythonExe -m PyInstaller --noconfirm --clean $specPath
+& $PythonExe -m PyInstaller --noconfirm --clean --distpath $distDir $specPath
 if ($LASTEXITCODE -ne 0) {
     throw "PyInstaller build failed with exit code $LASTEXITCODE."
 }

@@ -14,8 +14,8 @@ a = Analysis(
     pathex=[str(CLIENT_DIR)],
     binaries=[],
     datas=[
-        (str(CLIENT_DIR / "client_config.yaml"), "."),
-        (str(CLIENT_DIR / "gui_config.yaml"), "."),
+        (str(CLIENT_DIR / "config" / "client_config.yaml"), "."),
+        (str(CLIENT_DIR / "config" / "gui_config.yaml"), "."),
     ],
     hiddenimports=collect_submodules("robot_agent"),
     hookspath=[],

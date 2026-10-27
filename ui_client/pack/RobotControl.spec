@@ -1,11 +1,18 @@
 # -*- mode: python ; coding: utf-8 -*-
 
+from pathlib import Path
+
+
+PACK_DIR = Path(SPECPATH).resolve()
+CLIENT_DIR = PACK_DIR.parent
 
 a = Analysis(
-    ['gui_start.py'],
-    pathex=[],
+    [str(CLIENT_DIR / 'gui_start.py')],
+    pathex=[str(CLIENT_DIR)],
     binaries=[],
-    datas=[],
+    datas=[
+        (str(CLIENT_DIR / 'config' / 'gui_config.yaml'), '.'),
+    ],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
