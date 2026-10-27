@@ -28,7 +28,7 @@ def _default_config_path() -> Path:
     # Prefer an external config next to the packaged exe.
     if getattr(sys, "frozen", False):
         return Path(sys.executable).resolve().with_name("client_config.yaml")
-    return Path(__file__).resolve().with_name("client_config.yaml")
+    return Path(__file__).resolve().parent / "config" / "client_config.yaml"
 
 
 CONFIG_PATH = _default_config_path()

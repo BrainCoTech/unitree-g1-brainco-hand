@@ -1,9 +1,13 @@
 # -*- mode: python ; coding: utf-8 -*-
 
+from pathlib import Path
+
+
+ui_client_dir = Path(SPECPATH).resolve().parent
 
 a = Analysis(
-    ['gui_start.py'],
-    pathex=[],
+    [str(ui_client_dir / 'ui_client.py')],
+    pathex=[str(ui_client_dir)],
     binaries=[],
     datas=[],
     hiddenimports=[],
@@ -22,14 +26,14 @@ exe = EXE(
     a.binaries,
     a.datas,
     [],
-    name='RobotControl',
+    name='UIClient',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
     upx=True,
     upx_exclude=[],
     runtime_tmpdir=None,
-    console=False,
+    console=True,
     disable_windowed_traceback=False,
     argv_emulation=False,
     target_arch=None,
